@@ -1,4 +1,4 @@
-import { CssBaseline, CssVarsProvider } from "@mui/joy";
+import { JoyProvider } from "@/app/JoyProvider";
 import type { Metadata } from "next";
 import Head from "next/head";
 import type { ReactNode } from "react";
@@ -19,10 +19,7 @@ export default function RootLayout({
 				<meta name="viewport" content="initial-scale=1, width=device-width" />
 			</Head>
 			<body>
-				<CssVarsProvider defaultMode={"system"}>
-					<CssBaseline />
-					{children}
-				</CssVarsProvider>
+				<JoyProvider>{children}</JoyProvider>
 			</body>
 		</html>
 	);
