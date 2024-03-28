@@ -1,3 +1,4 @@
+import type { RowState } from "@/classes/rowState";
 import {
 	type MozcCommandCategory,
 	type MozcEnCommand,
@@ -27,14 +28,14 @@ import {
 	Typography,
 	accordionDetailsClasses,
 } from "@mui/joy";
-import { type Dispatch, type SetStateAction, useState } from "react";
+import { useState } from "react";
 
 export function CommandSelector({
 	command,
-	setCommand,
+	setState,
 }: {
 	command: MozcEnCommand | null;
-	setCommand: Dispatch<SetStateAction<MozcEnCommand | null>>;
+	setState: (state: Partial<RowState>) => void;
 }) {
 	const [expand, setExpand] = useState<MozcCommandCategory | null>(
 		command ? mozcCommands[command].category : null,
@@ -61,7 +62,7 @@ export function CommandSelector({
 						</Typography>
 					);
 				}}
-				onChange={(_, newCommand) => setCommand(newCommand)}
+				onChange={(_, newCommand) => setState({ command: newCommand })}
 			>
 				<AccordionGroup>
 					<List>

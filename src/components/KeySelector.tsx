@@ -1,14 +1,15 @@
-import { type PressKey, pressNothing } from "@/components/Row";
+import { PressKey } from "@/classes/pressKey";
+import type { RowState } from "@/classes/rowState";
 import { Chip, Input, Snackbar, Stack } from "@mui/joy";
-import { type Dispatch, type SetStateAction, useState } from "react";
+import { useState } from "react";
 import { Key } from "ts-key-enum";
 
 const combinationKeys = [Key.Meta, Key.Fn, Key.Control, Key.Shift, Key.Alt];
 
 export function KeySelector({
 	pressKey,
-	setPressKey,
-}: { pressKey: PressKey; setPressKey: Dispatch<SetStateAction<PressKey>> }) {
+	setState,
+}: { pressKey: PressKey; setState: (state: Partial<RowState>) => void }) {
 	const [IMEEnable, setIMEEnable] = useState(false);
 
 	return (
@@ -31,21 +32,23 @@ export function KeySelector({
 
 					// IMEが有効であれば警告する
 					if (key === "Process") {
-						setPressKey(pressNothing);
+						setState({ pressKey: new PressKey() });
 						setIMEEnable(true);
 						return;
 					}
 
 					setIMEEnable(false);
 
-					setPressKey({
-						metaKey,
-						ctrlKey,
-						altKey,
-						shiftKey,
-						key: combinationKeys.every((cbkey) => key !== cbkey)
-							? key.toUpperCase()
-							: null,
+					setState({
+						pressKey: {
+							metaKey,
+							ctrlKey,
+							altKey,
+							shiftKey,
+							key: combinationKeys.every((cbkey) => key !== cbkey)
+								? key.toUpperCase()
+								: null,
+						},
 					});
 				}}
 				error={IMEEnable}

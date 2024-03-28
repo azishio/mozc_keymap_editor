@@ -1,13 +1,13 @@
+import type { RowState } from "@/classes/rowState";
 import { type MozcMode, mozcModes } from "@/mozc_options";
 import { Checkbox, Sheet, Stack } from "@mui/joy";
-import type { Dispatch, SetStateAction } from "react";
 
 export function ModeSelector({
 	modes,
-	setModes,
+	setState,
 }: {
 	modes: MozcMode["en"][];
-	setModes: Dispatch<SetStateAction<MozcMode["en"][]>>;
+	setState: (state: Partial<RowState>) => void;
 }) {
 	return (
 		<Stack direction={"row"} flexWrap={"wrap"} spacing={1} useFlexGap>
@@ -24,9 +24,9 @@ export function ModeSelector({
 						variant={modes.includes(en) ? "soft" : "outlined"}
 						onChange={(e) => {
 							if (e.target.checked) {
-								setModes((prevModes) => [...prevModes, en]);
+								setState({ modes: [...modes, en] });
 							} else {
-								setModes((prevModes) => prevModes.filter((m) => m !== en));
+								setState({ modes: modes.filter((m) => m !== en) });
 							}
 						}}
 						slotProps={{

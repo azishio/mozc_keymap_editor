@@ -1,36 +1,32 @@
-"use client";
-
+import type { RowState } from "@/classes/rowState";
 import { CommandSelector } from "@/components/CommandSelector";
 import { KeySelector } from "@/components/KeySelector";
 import { ModeSelector } from "@/components/ModeSelector";
-import type { MozcEnCommand, MozcMode } from "@/mozc_options";
-import { useState } from "react";
+import { RemoveCircle } from "@mui/icons-material";
+import { IconButton } from "@mui/joy";
 
-export const pressNothing = {
-	metaKey: false,
-	ctrlKey: false,
-	altKey: false,
-	shiftKey: false,
-	key: null as string | null,
-};
-
-export type PressKey = typeof pressNothing;
-
-export function Row() {
-	const [command, setCommand] = useState<null | MozcEnCommand>(null);
-	const [pressKey, setPressKey] = useState<PressKey>(pressNothing);
-	const [modes, setModes] = useState<MozcMode["en"][]>([]);
-
+export function Row({
+	setState,
+	rowState: { modes, pressKey, command },
+}: {
+	setState: (state: Partial<RowState>) => void;
+	rowState: RowState;
+}) {
 	return (
 		<tr>
 			<td>
-				<ModeSelector modes={modes} setModes={setModes} />
+				<ModeSelector modes={modes} setState={setState} />
 			</td>
 			<td>
-				<KeySelector pressKey={pressKey} setPressKey={setPressKey} />
+				<KeySelector pressKey={pressKey} setState={setState} />
 			</td>
 			<td>
-				<CommandSelector command={command} setCommand={setCommand} />
+				<CommandSelector command={command} setState={setState} />
+			</td>
+			<td>
+				<IconButton>
+					<RemoveCircle />
+				</IconButton>
 			</td>
 		</tr>
 	);
