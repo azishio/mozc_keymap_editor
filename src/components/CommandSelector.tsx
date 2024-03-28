@@ -75,7 +75,7 @@ export function CommandSelector({
 								>
 									<ListSubheader
 										sticky
-										variant={expand === category ? "soft" : "plain"}
+										variant={expand === category ? "outlined" : "plain"}
 										sx={{ paddingY: 0 }}
 									>
 										<AccordionSummary
