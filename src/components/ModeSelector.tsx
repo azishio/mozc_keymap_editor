@@ -9,7 +9,10 @@ export function ModeSelector() {
 	return (
 		<Stack direction={"row"} flexWrap={"wrap"} spacing={1} useFlexGap>
 			{modes.map(({ en, ja }) => (
-				<Sheet sx={{ paddingY: "3px", paddingX: "9px" }} key={en}>
+				<Sheet
+					sx={{ paddingY: "3px", paddingX: "9px", borderRadius: 4 }}
+					key={en}
+				>
 					<Checkbox
 						label={ja}
 						disableIcon
