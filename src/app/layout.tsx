@@ -1,4 +1,6 @@
+import { CssBaseline, CssVarsProvider } from "@mui/joy";
 import type { Metadata } from "next";
+import Head from "next/head";
 import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
@@ -13,7 +15,15 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="ja">
-			<body>{children}</body>
+			<Head>
+				<meta name="viewport" content="initial-scale=1, width=device-width" />
+			</Head>
+			<body>
+				<CssVarsProvider defaultMode={"system"}>
+					<CssBaseline />
+					{children}
+				</CssVarsProvider>
+			</body>
 		</html>
 	);
 }
