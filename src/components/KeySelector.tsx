@@ -1,22 +1,14 @@
-"use client";
-
+import { type PressKey, pressNothing } from "@/components/Row";
 import { Chip, Input, Snackbar, Stack } from "@mui/joy";
-import { useState } from "react";
+import { type Dispatch, type SetStateAction, useState } from "react";
 import { Key } from "ts-key-enum";
 
 const combinationKeys = [Key.Meta, Key.Fn, Key.Control, Key.Shift, Key.Alt];
 
-const pressNothing = {
-	metaKey: false,
-	ctrlKey: false,
-	altKey: false,
-	shiftKey: false,
-	key: null as string | null,
-};
-
-export function KeySelector() {
-	const [pressKey, setPressKey] = useState(pressNothing);
-
+export function KeySelector({
+	pressKey,
+	setPressKey,
+}: { pressKey: PressKey; setPressKey: Dispatch<SetStateAction<PressKey>> }) {
 	const [IMEEnable, setIMEEnable] = useState(false);
 
 	return (

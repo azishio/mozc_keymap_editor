@@ -1,14 +1,17 @@
-"use client";
-
-import { type Mode, modes } from "@/mozc_options";
+import { type MozcMode, mozcModes } from "@/mozc_options";
 import { Checkbox, Sheet, Stack } from "@mui/joy";
-import { useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
 
-export function ModeSelector() {
-	const [select, setSelect] = useState<Mode["en"][]>([]);
+export function ModeSelector({
+	modes,
+	setModes,
+}: {
+	modes: MozcMode["en"][];
+	setModes: Dispatch<SetStateAction<MozcMode["en"][]>>;
+}) {
 	return (
 		<Stack direction={"row"} flexWrap={"wrap"} spacing={1} useFlexGap>
-			{modes.map(({ en, ja }) => (
+			{mozcModes.map(({ en, ja }) => (
 				<Sheet
 					sx={{ paddingY: "3px", paddingX: "9px", borderRadius: 4 }}
 					key={en}
@@ -17,13 +20,13 @@ export function ModeSelector() {
 						label={ja}
 						disableIcon
 						overlay
-						checked={select.includes(en)}
-						variant={select.includes(en) ? "soft" : "outlined"}
+						checked={modes.includes(en)}
+						variant={modes.includes(en) ? "soft" : "outlined"}
 						onChange={(e) => {
 							if (e.target.checked) {
-								setSelect((mode) => [...mode, en]);
+								setModes((prevModes) => [...prevModes, en]);
 							} else {
-								setSelect((mode) => mode.filter((m) => m !== en));
+								setModes((prevModes) => prevModes.filter((m) => m !== en));
 							}
 						}}
 						slotProps={{

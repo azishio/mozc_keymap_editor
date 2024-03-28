@@ -1,7 +1,7 @@
 // ソースは以下
 // https://qiita.com/nekoppoituki_nhs/items/f612eb863b424d83d79f
 
-export const modes = [
+export const mozcModes = [
 	{ en: "DirectInput", ja: "直接入力" },
 	{ en: "Precomposition", ja: "入力文字なし" },
 	{ en: "Composition", ja: "変換前入力中" },
@@ -10,9 +10,9 @@ export const modes = [
 	{ en: "Prediction", ja: "サジェスト選択中" },
 ] as const;
 
-export type Mode = (typeof modes)[number];
+export type MozcMode = (typeof mozcModes)[number];
 
-export const commandCategories = [
+export const mozcCommandCategories = [
 	{
 		category: "基本操作",
 		commands: [
@@ -292,25 +292,27 @@ export const commandCategories = [
 	},
 ] as const;
 
-export type CommandCategory = (typeof commandCategories)[number]["category"];
+export type MozcCommandCategory =
+	(typeof mozcCommandCategories)[number]["category"];
 
-const jaCommands = commandCategories.flatMap(({ commands }) =>
+const mozcJaCommands = mozcCommandCategories.flatMap(({ commands }) =>
 	commands.map(({ ja }) => ja),
 );
 
-type t = (typeof commandCategories)[number]["commands"];
+export type MozcJaCommand = (typeof mozcJaCommands)[number];
 
-export type JaCommand = (typeof jaCommands)[number];
-
-const enCommands = commandCategories.flatMap(({ commands }) =>
+const mozcEnCommands = mozcCommandCategories.flatMap(({ commands }) =>
 	commands.map(({ en }) => en),
 );
 
-export type EnCommand = (typeof enCommands)[number];
+export type MozcEnCommand = (typeof mozcEnCommands)[number];
 
 // 逆引き
-export const commands = Object.fromEntries(
-	commandCategories.flatMap(({ commands, category }) =>
+export const mozcCommands = Object.fromEntries(
+	mozcCommandCategories.flatMap(({ commands, category }) =>
 		commands.map(({ en, ja }) => [en, { ja, category }]),
 	),
-) as Record<EnCommand, { ja: JaCommand; category: CommandCategory }>;
+) as Record<
+	MozcEnCommand,
+	{ ja: MozcJaCommand; category: MozcCommandCategory }
+>;

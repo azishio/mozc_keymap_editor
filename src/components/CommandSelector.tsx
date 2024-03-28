@@ -1,10 +1,8 @@
-"use client";
-
 import {
-	type CommandCategory,
-	type EnCommand,
-	commandCategories,
-	commands,
+	type MozcCommandCategory,
+	type MozcEnCommand,
+	mozcCommandCategories,
+	mozcCommands,
 } from "@/mozc_options";
 import {
 	Check,
@@ -29,16 +27,18 @@ import {
 	Typography,
 	accordionDetailsClasses,
 } from "@mui/joy";
-import { useState } from "react";
+import { type Dispatch, type SetStateAction, useState } from "react";
 
 export function CommandSelector({
-	initialCommand = null,
-}: { initialCommand?: EnCommand | null }) {
-	const [expand, setExpand] = useState<CommandCategory | null>(
-		initialCommand ? commands[initialCommand].category : null,
+	command,
+	setCommand,
+}: {
+	command: MozcEnCommand | null;
+	setCommand: Dispatch<SetStateAction<MozcEnCommand | null>>;
+}) {
+	const [expand, setExpand] = useState<MozcCommandCategory | null>(
+		command ? mozcCommands[command].category : null,
 	);
-
-	const [command, setCommand] = useState<null | EnCommand>(null);
 
 	return (
 		<>
@@ -48,7 +48,7 @@ export function CommandSelector({
 				renderValue={(selected) => {
 					if (!selected) return null;
 
-					const { category, ja } = commands[selected.value];
+					const { category, ja } = mozcCommands[selected.value];
 					return (
 						<Typography
 							startDecorator={
@@ -65,7 +65,7 @@ export function CommandSelector({
 			>
 				<AccordionGroup>
 					<List>
-						{commandCategories.map(({ category, commands }) => (
+						{mozcCommandCategories.map(({ category, commands }) => (
 							<ListItem nested key={category}>
 								<Accordion
 									expanded={expand === category}
