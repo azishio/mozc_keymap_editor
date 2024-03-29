@@ -1,15 +1,14 @@
 import { PressKey } from "@/classes/pressKey";
-import type { ShortcutState } from "@/classes/shortcutState";
 import { Chip, Input, Snackbar, Stack } from "@mui/joy";
-import { useState } from "react";
+import { type Dispatch, type SetStateAction, useState } from "react";
 import { Key } from "ts-key-enum";
 
 const combinationKeys = [Key.Meta, Key.Fn, Key.Control, Key.Shift, Key.Alt];
 
 export function KeySelector({
 	pressKey,
-	setState,
-}: { pressKey: PressKey; setState: (state: Partial<ShortcutState>) => void }) {
+	setPressKey,
+}: { pressKey: PressKey; setPressKey: Dispatch<SetStateAction<PressKey>> }) {
 	const [IMEEnable, setIMEEnable] = useState(false);
 
 	return (
@@ -32,15 +31,15 @@ export function KeySelector({
 
 					// IMEが有効であれば警告する
 					if (key === "Process") {
-						setState({ pressKey: new PressKey() });
+						setPressKey(new PressKey());
 						setIMEEnable(true);
 						return;
 					}
 
 					setIMEEnable(false);
 
-					setState({
-						pressKey: {
+					setPressKey(
+						new PressKey({
 							metaKey,
 							ctrlKey,
 							altKey,
@@ -48,8 +47,8 @@ export function KeySelector({
 							key: combinationKeys.every((cbkey) => key !== cbkey)
 								? key.toUpperCase()
 								: null,
-						},
-					});
+						}),
+					);
 				}}
 				error={IMEEnable}
 			/>

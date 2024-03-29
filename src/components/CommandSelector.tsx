@@ -1,4 +1,3 @@
-import type { ShortcutState } from "@/classes/shortcutState";
 import {
 	type MozcCommandCategory,
 	type MozcEnCommand,
@@ -28,14 +27,14 @@ import {
 	Typography,
 	accordionDetailsClasses,
 } from "@mui/joy";
-import { useState } from "react";
+import { type Dispatch, type SetStateAction, useState } from "react";
 
 export function CommandSelector({
 	command,
-	setState,
+	setCommand,
 }: {
 	command: MozcEnCommand | null;
-	setState: (state: Partial<ShortcutState>) => void;
+	setCommand: Dispatch<SetStateAction<null | MozcEnCommand>>;
 }) {
 	const [expand, setExpand] = useState<MozcCommandCategory | null>(
 		command ? mozcCommands[command].category : null,
@@ -62,7 +61,7 @@ export function CommandSelector({
 						</Typography>
 					);
 				}}
-				onChange={(_, newCommand) => setState({ command: newCommand })}
+				onChange={(_, newCommand) => setCommand(newCommand)}
 			>
 				<AccordionGroup>
 					<List>
@@ -107,7 +106,7 @@ export function CommandSelector({
 										}}
 									>
 										<List>
-											{commands.map(({ ja, en }, i, l) => (
+											{commands.map(({ ja, en }) => (
 												<Box key={en}>
 													<Option value={en} key={en}>
 														<ListItemDecorator>

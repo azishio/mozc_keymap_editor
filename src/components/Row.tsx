@@ -1,27 +1,50 @@
-import type { ShortcutState } from "@/classes/shortcutState";
+import { MozcModes } from "@/classes/mozcModes.ts";
+import { PressKey } from "@/classes/pressKey.ts";
 import { CommandSelector } from "@/components/CommandSelector";
 import { KeySelector } from "@/components/KeySelector";
 import { ModeSelector } from "@/components/ModeSelector";
-import { RemoveCircle } from "@mui/icons-material";
-import { IconButton } from "@mui/joy";
+import type { MozcEnCommand } from "@/mozc_options.ts";
+import { RemoveCircle, Report } from "@mui/icons-material";
+import { IconButton, Stack, Tooltip, Typography } from "@mui/joy";
+import { useState } from "react";
 
 export function Row({
-	setState,
-	rowState: { modes, pressKey, command },
+	order,
+	confliction,
 }: {
-	setState: (state: Partial<ShortcutState>) => void;
-	rowState: ShortcutState;
+	order: number;
+	confliction: number[] | null;
 }) {
+	const [modes, setModes] = useState<MozcModes>(new MozcModes());
+	const [pressKey, setPressKey] = useState(new PressKey());
+	const [command, setCommand] = useState<null | MozcEnCommand>(null);
+
 	return (
 		<tr>
 			<td>
-				<ModeSelector modes={modes} setState={setState} />
+				<Stack position={"relative"} alignItems={"center"}>
+					{confliction && (
+						<Tooltip
+							title={`${confliction.map((i) => `#${i} `)}と競合/重複しています`}
+							placement={"right"}
+							color={"danger"}
+							variant={"plain"}
+							sx={{ position: "absolute", top: -30 }}
+						>
+							<Report color={"danger"} />
+						</Tooltip>
+					)}
+					<Typography level={"title-lg"}>{order}</Typography>
+				</Stack>
 			</td>
 			<td>
-				<KeySelector pressKey={pressKey} setState={setState} />
+				<ModeSelector modes={modes} setModes={setModes} />
 			</td>
 			<td>
-				<CommandSelector command={command} setState={setState} />
+				<KeySelector pressKey={pressKey} setPressKey={setPressKey} />
+			</td>
+			<td>
+				<CommandSelector command={command} setCommand={setCommand} />
 			</td>
 			<td>
 				<IconButton>

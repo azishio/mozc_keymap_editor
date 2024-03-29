@@ -1,6 +1,5 @@
 "use client";
 
-import { ShortcutState } from "@/classes/shortcutState";
 import { Row } from "@/components/Row";
 import { DeleteForever } from "@mui/icons-material";
 import { Sheet, Table, Typography } from "@mui/joy";
@@ -13,47 +12,40 @@ export function ConfigTable() {
 		Array.from(Array(5), () => crypto.randomUUID()),
 	);
 
-	// Mapを使いたい&変更するたびに再生成したくない
-	// 更新するときは、新しいオブジェクトに参照を貼り変える
-	const [shortcutData, setShortcutData] = useState<{
-		current: Map<string, ShortcutState>;
-	}>({
-		current: new Map(),
-	});
-
-	// 更新する内容を渡すと前回の内容へ上書きして保存する
-	const setState = (id: string) => {
-		return (state: Partial<ShortcutState>) =>
-			setShortcutData(({ current: prevData }) => {
-				const prev = prevData.get(id) || new ShortcutState();
-				return { current: prevData.set(id, { ...prev, ...state }) };
-			});
-	};
-
-	const deleteRow = (id: string, index: number) => {
-		return () => {
-			setShortcutData(({ current: prev }) => {
-				prev.delete(id);
-				return { current: prev };
-			});
-			setShortcutOrder((prevArr) => prevArr.toSpliced(index, 1));
-		};
-	};
-
 	return (
 		<Sheet variant={"outlined"} sx={{ boxShadow: "sm", borderRadius: "sm" }}>
 			<Table
 				borderAxis={"both"}
 				stickyHeader
 				stripe={"even"}
-				sx={(theme) => ({
-					"& thead th:last-child": {
-						width: "60px",
+				sx={{
+					"& thead th:first-child": {
+						width: 50,
+						textAlign: "center",
 					},
-				})}
+					"& thead th:nth-child(2)": {
+						maxWidth: 300,
+					},
+					"& thead th:last-child": {
+						width: 50,
+						textAlign: "center",
+					},
+					"& td:first-child": {
+						textAlign: "center",
+					},
+					"& td:last-child": {
+						textAlign: "center",
+					},
+					"& thead th": {
+						verticalAlign: "middle",
+					},
+				}}
 			>
 				<thead>
 					<tr>
+						<th>
+							<Typography level={"title-lg"}>#</Typography>
+						</th>
 						<th>
 							<Typography level={"title-lg"}>モード</Typography>
 						</th>
@@ -71,12 +63,8 @@ export function ConfigTable() {
 					</tr>
 				</thead>
 				<tbody>
-					{shortcutOrder.map((id) => (
-						<Row
-							key={id}
-							rowState={shortcutData.current.get(id) || new ShortcutState()}
-							setState={setState(id)}
-						/>
+					{shortcutOrder.map((id, order) => (
+						<Row key={id} order={order} />
 					))}
 				</tbody>
 			</Table>

@@ -1,32 +1,37 @@
-import type { ShortcutState } from "@/classes/shortcutState";
-import { type MozcMode, mozcModes } from "@/mozc_options";
-import { Checkbox, Sheet, Stack } from "@mui/joy";
+import { MozcModes } from "@/classes/mozcModes.ts";
+import { Checkbox, Sheet, Stack, Typography } from "@mui/joy";
+import type { Dispatch, SetStateAction } from "react";
 
 export function ModeSelector({
 	modes,
-	setState,
+	setModes,
 }: {
-	modes: MozcMode["en"][];
-	setState: (state: Partial<ShortcutState>) => void;
+	modes: MozcModes;
+	setModes: Dispatch<SetStateAction<MozcModes>>;
 }) {
 	return (
 		<Stack direction={"row"} flexWrap={"wrap"} spacing={1} useFlexGap>
-			{mozcModes.map(({ en, ja }) => (
+			{MozcModes.list.map(({ camel, lCamel, ja }) => (
 				<Sheet
 					sx={{ paddingY: "3px", paddingX: "9px", borderRadius: 4 }}
-					key={en}
+					key={lCamel}
 				>
 					<Checkbox
-						label={ja}
+						label={
+							<Stack>
+								<Typography level={"title-md"}>{ja}</Typography>
+								<Typography level={"body-sm"}>{camel}</Typography>
+							</Stack>
+						}
 						disableIcon
 						overlay
-						checked={modes.includes(en)}
-						variant={modes.includes(en) ? "soft" : "outlined"}
+						checked={modes[lCamel]}
+						variant={modes[lCamel] ? "soft" : "outlined"}
 						onChange={(e) => {
 							if (e.target.checked) {
-								setState({ modes: [...modes, en] });
+								setModes((prev) => prev.enable(lCamel));
 							} else {
-								setState({ modes: modes.filter((m) => m !== en) });
+								setModes((prev) => prev.disable(lCamel));
 							}
 						}}
 						slotProps={{

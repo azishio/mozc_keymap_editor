@@ -1,17 +1,6 @@
 // ソースは以下
 // https://qiita.com/nekoppoituki_nhs/items/f612eb863b424d83d79f
 
-export const mozcModes = [
-	{ en: "DirectInput", ja: "直接入力" },
-	{ en: "Precomposition", ja: "入力文字なし" },
-	{ en: "Composition", ja: "変換前入力中" },
-	{ en: "Conversion", ja: "変換中" },
-	{ en: "Suggestion", ja: "サジェスト表示中" },
-	{ en: "Prediction", ja: "サジェスト選択中" },
-] as const;
-
-export type MozcMode = (typeof mozcModes)[number];
-
 export const mozcCommandCategories = [
 	{
 		category: "基本操作",
