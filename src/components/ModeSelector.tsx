@@ -1,4 +1,4 @@
-import type { RowState } from "@/classes/rowState";
+import type { ShortcutState } from "@/classes/shortcutState";
 import { type MozcMode, mozcModes } from "@/mozc_options";
 import { Checkbox, Sheet, Stack } from "@mui/joy";
 
@@ -7,7 +7,7 @@ export function ModeSelector({
 	setState,
 }: {
 	modes: MozcMode["en"][];
-	setState: (state: Partial<RowState>) => void;
+	setState: (state: Partial<ShortcutState>) => void;
 }) {
 	return (
 		<Stack direction={"row"} flexWrap={"wrap"} spacing={1} useFlexGap>

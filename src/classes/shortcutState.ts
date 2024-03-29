@@ -1,7 +1,7 @@
 import { PressKey } from "@/classes/pressKey";
 import type { MozcEnCommand, MozcMode } from "@/mozc_options";
 
-export class RowState {
+export class ShortcutState {
 	public command: null | MozcEnCommand = null;
 	public pressKey = new PressKey();
 	public modes: MozcMode["en"][] = [];

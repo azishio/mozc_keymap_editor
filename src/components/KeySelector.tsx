@@ -1,5 +1,5 @@
 import { PressKey } from "@/classes/pressKey";
-import type { RowState } from "@/classes/rowState";
+import type { ShortcutState } from "@/classes/shortcutState";
 import { Chip, Input, Snackbar, Stack } from "@mui/joy";
 import { useState } from "react";
 import { Key } from "ts-key-enum";
@@ -9,7 +9,7 @@ const combinationKeys = [Key.Meta, Key.Fn, Key.Control, Key.Shift, Key.Alt];
 export function KeySelector({
 	pressKey,
 	setState,
-}: { pressKey: PressKey; setState: (state: Partial<RowState>) => void }) {
+}: { pressKey: PressKey; setState: (state: Partial<ShortcutState>) => void }) {
 	const [IMEEnable, setIMEEnable] = useState(false);
 
 	return (

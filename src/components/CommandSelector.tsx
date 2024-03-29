@@ -1,4 +1,4 @@
-import type { RowState } from "@/classes/rowState";
+import type { ShortcutState } from "@/classes/shortcutState";
 import {
 	type MozcCommandCategory,
 	type MozcEnCommand,
@@ -35,7 +35,7 @@ export function CommandSelector({
 	setState,
 }: {
 	command: MozcEnCommand | null;
-	setState: (state: Partial<RowState>) => void;
+	setState: (state: Partial<ShortcutState>) => void;
 }) {
 	const [expand, setExpand] = useState<MozcCommandCategory | null>(
 		command ? mozcCommands[command].category : null,

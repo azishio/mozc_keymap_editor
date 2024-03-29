@@ -1,6 +1,6 @@
 "use client";
 
-import { RowState } from "@/classes/rowState";
+import { ShortcutState } from "@/classes/shortcutState";
 import { Row } from "@/components/Row";
 import { DeleteForever } from "@mui/icons-material";
 import { Sheet, Table, Typography } from "@mui/joy";
@@ -9,32 +9,34 @@ import { useState } from "react";
 export function ConfigTable() {
 	const uuid = crypto.randomUUID();
 
-	const [rowOrder, setRowOrder] = useState<string[]>(
+	const [shortcutOrder, setShortcutOrder] = useState<string[]>(
 		Array.from(Array(5), () => crypto.randomUUID()),
 	);
 
 	// Mapを使いたい&変更するたびに再生成したくない
 	// 更新するときは、新しいオブジェクトに参照を貼り変える
-	const [rowData, setRowData] = useState<{ current: Map<string, RowState> }>({
+	const [shortcutData, setShortcutData] = useState<{
+		current: Map<string, ShortcutState>;
+	}>({
 		current: new Map(),
 	});
 
 	// 更新する内容を渡すと前回の内容へ上書きして保存する
 	const setState = (id: string) => {
-		return (state: Partial<RowState>) =>
-			setRowData(({ current: prevData }) => {
-				const prev = prevData.get(id) || new RowState();
+		return (state: Partial<ShortcutState>) =>
+			setShortcutData(({ current: prevData }) => {
+				const prev = prevData.get(id) || new ShortcutState();
 				return { current: prevData.set(id, { ...prev, ...state }) };
 			});
 	};
 
 	const deleteRow = (id: string, index: number) => {
 		return () => {
-			setRowData(({ current: prev }) => {
+			setShortcutData(({ current: prev }) => {
 				prev.delete(id);
 				return { current: prev };
 			});
-			setRowOrder((prevArr) => prevArr.toSpliced(index, 1));
+			setShortcutOrder((prevArr) => prevArr.toSpliced(index, 1));
 		};
 	};
 
@@ -69,10 +71,10 @@ export function ConfigTable() {
 					</tr>
 				</thead>
 				<tbody>
-					{rowOrder.map((id) => (
+					{shortcutOrder.map((id) => (
 						<Row
 							key={id}
-							rowState={rowData.current.get(id) || new RowState()}
+							rowState={shortcutData.current.get(id) || new ShortcutState()}
 							setState={setState(id)}
 						/>
 					))}

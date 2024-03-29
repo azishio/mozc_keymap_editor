@@ -1,4 +1,4 @@
-import type { RowState } from "@/classes/rowState";
+import type { ShortcutState } from "@/classes/shortcutState";
 import { CommandSelector } from "@/components/CommandSelector";
 import { KeySelector } from "@/components/KeySelector";
 import { ModeSelector } from "@/components/ModeSelector";
@@ -9,8 +9,8 @@ export function Row({
 	setState,
 	rowState: { modes, pressKey, command },
 }: {
-	setState: (state: Partial<RowState>) => void;
-	rowState: RowState;
+	setState: (state: Partial<ShortcutState>) => void;
+	rowState: ShortcutState;
 }) {
 	return (
 		<tr>
