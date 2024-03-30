@@ -42,4 +42,14 @@ export class MozcModes {
 		this[mode] = !this[mode];
 		return new MozcModes(this);
 	}
+
+	getEnables() {
+		return MozcModes.list.filter(({ lCamel }) => this[lCamel]);
+	}
+
+	hasSame(modes: MozcModes) {
+		const enables = modes.getEnables();
+
+		return this.getEnables().some((mode) => enables.includes(mode));
+	}
 }

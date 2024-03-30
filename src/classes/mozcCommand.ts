@@ -1,4 +1,4 @@
-export class Command {
+export class MozcCommand {
 	static mozcCommandCategories = [
 		{
 			category: "基本操作",
@@ -279,39 +279,40 @@ export class Command {
 		},
 	] as const;
 
-	static mozcCommands = Command.mozcCommandCategories.flatMap(({ commands }) =>
-		commands.flatMap((v) => v),
+	static mozcCommands = MozcCommand.mozcCommandCategories.flatMap(
+		({ commands }) => commands.flatMap((v) => v),
 	);
 
-	static info: Map<
-		(typeof Command.mozcCommands)[number]["en"],
-		{
-			category: (typeof Command)["mozcCommandCategories"][number]["category"];
-			ja: (typeof Command.mozcCommands)[number]["ja"];
-		}
-	> = new Map(
-		Command.mozcCommandCategories.flatMap(({ category, commands }) =>
+	static info = new Map(
+		MozcCommand.mozcCommandCategories.flatMap(({ category, commands }) =>
 			commands.map(({ en, ja }) => [en, { ja, category }]),
 		),
 	);
-
 	private category:
 		| null
-		| (typeof Command.mozcCommandCategories)[number]["category"] = null;
-	private jaName: null | (typeof Command.mozcCommands)[number]["ja"] = null;
-	private enName: null | (typeof Command.mozcCommands)[number]["en"] = null;
+		| (typeof MozcCommand.mozcCommandCategories)[number]["category"] = null;
+	private jaName: null | (typeof MozcCommand.mozcCommands)[number]["ja"] = null;
+	private enName: null | (typeof MozcCommand.mozcCommands)[number]["en"] = null;
 
-	constructor(command?: (typeof Command.mozcCommands)[number]["en"]) {
-		if (!command) return;
+	constructor(text?: string) {
+		if (!MozcCommand.isCommand(text)) return;
 
-		this.enName = command;
+		this.enName = text;
 
-		const info = Command.info.get(command);
+		const info = MozcCommand.info.get(text);
 		if (info) {
 			this.jaName = info.ja;
 			this.category = info.category;
 		}
 	}
+
+	static isCommand = (
+		text: unknown,
+	): text is (typeof MozcCommand.mozcCommands)[number]["en"] => {
+		return (
+			MozcCommand.info as Map<unknown, { ja: string; category: string }>
+		).has(text);
+	};
 
 	getCategory() {
 		return this.category;
@@ -325,7 +326,7 @@ export class Command {
 		return this.jaName;
 	}
 
-	eq(command: Command) {
+	eq(command: MozcCommand) {
 		return this.enName === command.enName;
 	}
 }

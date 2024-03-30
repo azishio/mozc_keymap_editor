@@ -1,23 +1,41 @@
-import { Command } from "@/classes/command.ts";
-import { MozcModes } from "@/classes/mozcModes.ts";
-import { PressKey } from "@/classes/pressKey.ts";
+import type { Shortcut, Shortcuts } from "@/classes/Shortcuts.ts";
 import { CommandSelector } from "@/components/CommandSelector";
 import { KeySelector } from "@/components/KeySelector";
 import { ModeSelector } from "@/components/ModeSelector";
 import { RemoveCircle, Report } from "@mui/icons-material";
 import { IconButton, Stack, Tooltip, Typography } from "@mui/joy";
-import { memo, useState } from "react";
+import React, { type Dispatch, type SetStateAction, useCallback } from "react";
 
-export const Row = memo(function Row({
+export function Row({
 	order,
+	id,
 	confliction,
+	shortcut,
+	setShortcuts,
 }: {
 	order: number;
+	id: string;
 	confliction: number[] | null;
+	shortcut: Shortcut;
+	setShortcuts: Dispatch<SetStateAction<Shortcuts>>;
 }) {
-	const [modes, setModes] = useState(new MozcModes());
-	const [pressKey, setPressKey] = useState(new PressKey());
-	const [command, setCommand] = useState(new Command());
+	const { modes, key, command } = shortcut;
+
+	const setState = useCallback(
+		({ modes, key, command }: Partial<Shortcut>) => {
+			setShortcuts((prev) => {
+				prev.conflictionCheckList.add(id);
+
+				if (modes) shortcut.modes = modes;
+				if (key) shortcut.key = key;
+				if (command) shortcut.command = command;
+
+				prev.checkConfliction();
+				return prev.copy();
+			});
+		},
+		[shortcut, setShortcuts, id],
+	);
 
 	return (
 		<tr>
@@ -25,7 +43,9 @@ export const Row = memo(function Row({
 				<Stack position={"relative"} alignItems={"center"}>
 					{confliction && (
 						<Tooltip
-							title={`${confliction.map((i) => `#${i} `)}と競合/重複しています`}
+							title={`${confliction
+								.map((i) => `#${i}`)
+								.join(", ")} と競合/重複しています`}
 							placement={"right"}
 							color={"danger"}
 							variant={"plain"}
@@ -38,13 +58,13 @@ export const Row = memo(function Row({
 				</Stack>
 			</td>
 			<td>
-				<ModeSelector modes={modes} setModes={setModes} />
+				<ModeSelector modes={modes} setState={setState} />
 			</td>
 			<td>
-				<KeySelector pressKey={pressKey} setPressKey={setPressKey} />
+				<KeySelector pressKey={key} setState={setState} />
 			</td>
 			<td>
-				<CommandSelector command={command} setCommand={setCommand} />
+				<CommandSelector command={command} setState={setState} />
 			</td>
 			<td>
 				<IconButton>
@@ -53,4 +73,4 @@ export const Row = memo(function Row({
 			</td>
 		</tr>
 	);
-});
+}
