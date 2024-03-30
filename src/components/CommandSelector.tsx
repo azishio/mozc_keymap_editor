@@ -1,9 +1,4 @@
-import {
-	type MozcCommandCategory,
-	type MozcEnCommand,
-	mozcCommandCategories,
-	mozcCommands,
-} from "@/mozc_options";
+import { Command } from "@/classes/command.ts";
 import {
 	Check,
 	KeyboardArrowDown,
@@ -33,39 +28,32 @@ export function CommandSelector({
 	command,
 	setCommand,
 }: {
-	command: MozcEnCommand | null;
-	setCommand: Dispatch<SetStateAction<null | MozcEnCommand>>;
+	command: Command;
+	setCommand: Dispatch<SetStateAction<Command>>;
 }) {
-	const [expand, setExpand] = useState<MozcCommandCategory | null>(
-		command ? mozcCommands[command].category : null,
-	);
+	const [expand, setExpand] = useState<
+		(typeof Command.mozcCommandCategories)[number]["category"] | null
+	>(command ? command.getCategory() : null);
 
 	return (
 		<>
 			<Select
 				placeholder={"* 未選択 *"}
-				value={command}
-				renderValue={(selected) => {
-					if (!selected) return null;
-
-					const { category, ja } = mozcCommands[selected.value];
-					return (
-						<Typography
-							startDecorator={
-								<Chip component={"span"} variant={"soft"} color={"primary"}>
-									{category}
-								</Chip>
-							}
-						>
-							{ja}
-						</Typography>
-					);
-				}}
-				onChange={(_, newCommand) => setCommand(newCommand)}
+				value={command.getEnName()}
+				renderValue={() => (
+					<>
+						<Stack direction={"row"} flexWrap={"wrap"} spacing={1}>
+							<Chip component={"span"} variant={"soft"} color={"primary"}>
+								{command.getCategory()}
+							</Chip>
+							<Typography>{command.getJaName()}</Typography>
+						</Stack>
+					</>
+				)}
 			>
 				<AccordionGroup>
 					<List>
-						{mozcCommandCategories.map(({ category, commands }) => (
+						{Command.mozcCommandCategories.map(({ category, commands }) => (
 							<ListItem nested key={category}>
 								<Accordion
 									expanded={expand === category}
@@ -108,9 +96,20 @@ export function CommandSelector({
 										<List>
 											{commands.map(({ ja, en }) => (
 												<Box key={en}>
-													<Option value={en} key={en}>
+													<Option
+														value={en}
+														key={en}
+														onClick={() => {
+															setCommand(new Command(en));
+															console.log(en);
+														}}
+													>
 														<ListItemDecorator>
-															<Check sx={{ opacity: command === en ? 1 : 0 }} />
+															<Check
+																sx={{
+																	opacity: command.getEnName() === en ? 1 : 0,
+																}}
+															/>
 														</ListItemDecorator>
 														<Stack>
 															<Typography level={"body-md"}>{ja}</Typography>

@@ -1,23 +1,23 @@
+import { Command } from "@/classes/command.ts";
 import { MozcModes } from "@/classes/mozcModes.ts";
 import { PressKey } from "@/classes/pressKey.ts";
 import { CommandSelector } from "@/components/CommandSelector";
 import { KeySelector } from "@/components/KeySelector";
 import { ModeSelector } from "@/components/ModeSelector";
-import type { MozcEnCommand } from "@/mozc_options.ts";
 import { RemoveCircle, Report } from "@mui/icons-material";
 import { IconButton, Stack, Tooltip, Typography } from "@mui/joy";
-import { useState } from "react";
+import { memo, useState } from "react";
 
-export function Row({
+export const Row = memo(function Row({
 	order,
 	confliction,
 }: {
 	order: number;
 	confliction: number[] | null;
 }) {
-	const [modes, setModes] = useState<MozcModes>(new MozcModes());
+	const [modes, setModes] = useState(new MozcModes());
 	const [pressKey, setPressKey] = useState(new PressKey());
-	const [command, setCommand] = useState<null | MozcEnCommand>(null);
+	const [command, setCommand] = useState(new Command());
 
 	return (
 		<tr>
@@ -53,4 +53,4 @@ export function Row({
 			</td>
 		</tr>
 	);
-}
+});
