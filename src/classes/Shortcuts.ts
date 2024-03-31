@@ -102,9 +102,6 @@ export class Shortcuts {
 					id !== checkTargetId,
 			);
 
-			console.log("target", checkTarget);
-			console.log(conflictionShortcuts.map((v) => v[1]));
-
 			if (conflictionShortcuts.length === 0) {
 				this.conflictionCheckList.delete(checkTargetId);
 				return;
@@ -161,6 +158,7 @@ export class Shortcuts {
 						)
 						.join("\n");
 				})
+				.filter((text) => text !== null)
 				.join("\n");
 		}
 
@@ -181,6 +179,7 @@ export class Shortcuts {
 					)
 					.join("\n");
 			})
+			.filter((text) => text !== null)
 			.join("\n");
 	}
 }

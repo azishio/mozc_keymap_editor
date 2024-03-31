@@ -2,6 +2,7 @@ import { ContentCopy } from "@mui/icons-material";
 import { IconButton, Sheet, Typography } from "@mui/joy";
 
 export function TextViewer({ text }: { text: string }) {
+	console.log("text", text);
 	return (
 		<Sheet
 			variant={"outlined"}
@@ -17,7 +18,7 @@ export function TextViewer({ text }: { text: string }) {
 				<ContentCopy />
 			</IconButton>
 			<Typography component={"pre"} sx={{ margin: 3 }}>
-				{text}
+				{text !== "" ? text : "※ 有効なキー設定がありません"}
 			</Typography>
 		</Sheet>
 	);
