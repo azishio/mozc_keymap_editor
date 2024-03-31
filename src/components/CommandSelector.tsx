@@ -104,7 +104,9 @@ export const CommandSelector = memo(
 																value={en}
 																key={en}
 																onClick={() =>
-																	setState({ command: new MozcCommand(en) })
+																	setState({
+																		command: MozcCommand.fromText(en),
+																	})
 																}
 															>
 																<ListItemDecorator>

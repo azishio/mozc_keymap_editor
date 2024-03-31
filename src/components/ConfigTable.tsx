@@ -1,5 +1,3 @@
-"use client";
-
 import { Shortcut, type Shortcuts } from "@/classes/Shortcuts.ts";
 import { Row } from "@/components/Row";
 import { AddCircleOutline, DeleteForever } from "@mui/icons-material";
