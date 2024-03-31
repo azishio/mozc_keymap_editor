@@ -1,4 +1,5 @@
 import { JoyProvider } from "@/app/JoyProvider";
+import { Sheet } from "@mui/joy";
 import type { Metadata } from "next";
 import Head from "next/head";
 import type { ReactNode } from "react";
@@ -19,7 +20,9 @@ export default function RootLayout({
 				<meta name="viewport" content="initial-scale=1, width=device-width" />
 			</Head>
 			<body>
-				<JoyProvider>{children}</JoyProvider>
+				<Sheet sx={{ width: "100vw", height: "100vh" }}>
+					<JoyProvider>{children}</JoyProvider>
+				</Sheet>
 			</body>
 		</html>
 	);

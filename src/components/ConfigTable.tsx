@@ -1,45 +1,45 @@
 "use client";
 
-import { Shortcut, Shortcuts } from "@/classes/Shortcuts.ts";
+import { Shortcut, type Shortcuts } from "@/classes/Shortcuts.ts";
 import { Row } from "@/components/Row";
 import { AddCircleOutline, DeleteForever } from "@mui/icons-material";
 import { IconButton, Sheet, Stack, Table, Typography } from "@mui/joy";
-import { useEffect, useState } from "react";
+import { type Dispatch, type SetStateAction, useEffect } from "react";
 
-export function ConfigTable() {
-	const [shortcutOrder, setShortcutOrder] = useState<string[]>([]);
-
-	const [shortcuts, setShortcuts] = useState(() => {
-		const shortcuts = new Shortcuts();
-		const newId = shortcuts.push(new Shortcut());
-		setShortcutOrder([newId]);
-		return shortcuts;
-	});
-
+export function ConfigTable({
+	shortcutOrder,
+	setShortcutOrder,
+	shortcuts,
+	setShortcuts,
+}: {
+	shortcutOrder: string[];
+	setShortcutOrder: Dispatch<SetStateAction<string[]>>;
+	shortcuts: Shortcuts;
+	setShortcuts: Dispatch<SetStateAction<Shortcuts>>;
+}) {
 	useEffect(() => {
 		console.log(shortcuts.silialize());
 	}, [shortcuts]);
 
 	return (
 		<Stack justifyContent={"center"}>
-			<Sheet variant={"outlined"} sx={{ boxShadow: "sm", borderRadius: "sm" }}>
+			<Sheet sx={{ boxShadow: "sm", borderRadius: "sm" }}>
 				<Table
 					borderAxis={"both"}
 					stickyHeader
 					stripe={"even"}
 					sx={{
+						tableLayout: "auto",
 						"& thead th:first-of-type": {
 							width: 50,
 							textAlign: "center",
-						},
-						"& thead th:nth-of-type(2)": {
-							maxWidth: 300,
 						},
 						"& thead th:last-of-type": {
 							width: 50,
 							textAlign: "center",
 						},
-						"& td:first-of-type": {
+
+						"& td:first-of-type ": {
 							textAlign: "center",
 						},
 						"& td:last-of-type": {
@@ -47,6 +47,10 @@ export function ConfigTable() {
 						},
 						"& thead th": {
 							verticalAlign: "middle",
+						},
+						"& td": {
+							paddingX: 2,
+							paddingY: 1,
 						},
 					}}
 				>

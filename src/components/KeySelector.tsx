@@ -17,7 +17,7 @@ export const KeySelector = memo(
 		return (
 			<>
 				<Input
-					sx={{ "caret-color": "transparent" }}
+					sx={{ "caret-color": "transparent", width: 250 }}
 					startDecorator={
 						<Stack direction={"row"} spacing={0.5}>
 							{pressKey.metaKey && <Chip color={"primary"}>Meta</Chip>}

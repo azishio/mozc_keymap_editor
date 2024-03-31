@@ -12,7 +12,13 @@ export const ModeSelector = memo(
 		setState: ({ modes, key, command }: Partial<Shortcut>) => void;
 	}) {
 		return (
-			<Stack direction={"row"} flexWrap={"wrap"} spacing={1} useFlexGap>
+			<Stack
+				direction={"row"}
+				flexWrap={"wrap"}
+				spacing={1}
+				useFlexGap
+				maxWidth={"fit-content"}
+			>
 				{MozcModes.list.map(({ camel, lCamel, ja }) => (
 					<Sheet
 						sx={{ paddingY: "3px", paddingX: "9px", borderRadius: 4 }}
