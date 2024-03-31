@@ -12,12 +12,14 @@ export function Row({
 	confliction,
 	shortcut,
 	setShortcuts,
+	deleteShortcut,
 }: {
 	order: number;
 	id: string;
 	confliction: number[] | null;
 	shortcut: Shortcut;
 	setShortcuts: Dispatch<SetStateAction<Shortcuts>>;
+	deleteShortcut: (id: string) => void;
 }) {
 	const { modes, key, command } = shortcut;
 
@@ -67,7 +69,7 @@ export function Row({
 				<CommandSelector command={command} setState={setState} />
 			</td>
 			<td>
-				<IconButton>
+				<IconButton onClick={() => deleteShortcut(id)}>
 					<RemoveCircle />
 				</IconButton>
 			</td>

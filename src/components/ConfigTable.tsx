@@ -2,7 +2,12 @@ import { Shortcut, type Shortcuts } from "@/classes/Shortcuts.ts";
 import { Row } from "@/components/Row";
 import { AddCircleOutline, DeleteForever } from "@mui/icons-material";
 import { IconButton, Sheet, Stack, Table, Typography } from "@mui/joy";
-import { type Dispatch, type SetStateAction, useEffect } from "react";
+import {
+	type Dispatch,
+	type SetStateAction,
+	useCallback,
+	useEffect,
+} from "react";
 
 export function ConfigTable({
 	shortcutOrder,
@@ -18,6 +23,17 @@ export function ConfigTable({
 	useEffect(() => {
 		console.log(shortcuts.silialize());
 	}, [shortcuts]);
+
+	const deleteShortcut = useCallback(
+		(id: string) => {
+			setShortcuts((prev) => {
+				prev.shortcutMap.delete(id);
+				return prev.copy();
+			});
+			setShortcutOrder((prev) => prev.filter((v) => v !== id));
+		},
+		[setShortcuts],
+	);
 
 	return (
 		<Stack justifyContent={"center"}>
@@ -83,6 +99,7 @@ export function ConfigTable({
 									key={id}
 									id={id}
 									order={order}
+									deleteShortcut={deleteShortcut}
 									confliction={
 										confliction
 											? [...confliction.keys()]
