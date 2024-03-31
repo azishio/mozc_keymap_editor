@@ -1,4 +1,14 @@
+/**
+ * 設定できるコマンドとその分類を持つクラス
+ *
+ * @remarks
+ * 格納するデータが変わる場合は新しくインスタンスを作成すること。
+ * インスタンスのアドレスが変更されるとコマンド選択UIが再レンダリングされる
+ */
 export class MozcCommand {
+	/**
+	 * カテゴリー毎に対応するコマンドをまとめた配列
+	 */
 	static mozcCommandCategories = [
 		{
 			category: "基本操作",
@@ -278,34 +288,75 @@ export class MozcCommand {
 			],
 		},
 	] as const;
-
+	/**
+	 * カテゴリー関係なくコマンドの英語表記と日本語表記をまとめた配列
+	 * @remarks
+	 * MozcCommand.mozcCommandCategoriesから生成
+	 */
 	static mozcCommands = MozcCommand.mozcCommandCategories.flatMap(
 		({ commands }) => commands.flatMap((v) => v),
 	);
-
+	/**
+	 * コマンドの英語表記から日本語表記/カテゴリーを取得するための逆引き辞書
+	 * @remarks
+	 * MozcCommand.mozcCommandCategoriesから生成
+	 */
 	static info = new Map(
 		MozcCommand.mozcCommandCategories.flatMap(({ category, commands }) =>
 			commands.map(({ en, ja }) => [en, { ja, category }]),
 		),
 	);
+	/**
+	 * 選択されているコマンドのカテゴリー
+	 * @private
+	 */
 	private category:
 		| null
 		| (typeof MozcCommand.mozcCommandCategories)[number]["category"] = null;
+	/**
+	 * 選択されているコマンドの日本語表記
+	 * @private
+	 */
 	private jaName: null | (typeof MozcCommand.mozcCommands)[number]["ja"] = null;
+	/**
+	 * 選択されているコマンドの英語表記
+	 * @private
+	 */
 	private enName: null | (typeof MozcCommand.mozcCommands)[number]["en"] = null;
 
-	constructor(text?: string) {
-		if (!MozcCommand.isCommand(text)) return;
+	/**
+	 * 引数が存在する場合、与えられた`MozcCommand`の浅いコピーを返す。
+	 */
+	constructor(command?: MozcCommand) {
+		if (!command) return;
 
-		this.enName = text;
-
-		const info = MozcCommand.info.get(text);
-		if (info) {
-			this.jaName = info.ja;
-			this.category = info.category;
-		}
+		Object.assign(this, command);
 	}
 
+	/**
+	 * 与えられた文字列から対応するコマンドを格納したインスタンスを返す。
+	 * 文字列に対応するコマンドが存在しない場合は初期状態のインスタンスを返す
+	 */
+	static fromText(text: string) {
+		const newInstance = new MozcCommand();
+
+		if (!MozcCommand.isCommand(text)) return newInstance;
+
+		newInstance.enName = text;
+		const info = MozcCommand.info.get(text);
+
+		// 前に文字列がコマンドであることを確認したので、必ずtruthy
+		if (info) {
+			newInstance.jaName = info.ja;
+			newInstance.category = info.category;
+		}
+
+		return newInstance;
+	}
+
+	/**
+	 * 与えられた文字列がコマンドか否か判定する
+	 */
 	static isCommand = (
 		text: unknown,
 	): text is (typeof MozcCommand.mozcCommands)[number]["en"] => {
@@ -326,6 +377,9 @@ export class MozcCommand {
 		return this.jaName;
 	}
 
+	/**
+	 * MozcCommandのインスタンスと自身を比較して内容が同じか否かを返す
+	 */
 	eq(command: MozcCommand) {
 		return this.enName === command.enName;
 	}

@@ -40,7 +40,7 @@ export class Shortcuts {
 					new Shortcut(
 						MozcModes.fromText(modes),
 						PressKey.fromText(keys),
-						new MozcCommand(command),
+						MozcCommand.fromText(command),
 					),
 			);
 
@@ -62,7 +62,7 @@ export class Shortcuts {
 			if (sameCmdAndKey) {
 				v.modes
 					.getEnables()
-					.forEach((mode) => sameCmdAndKey[1].modes.enable(mode));
+					.forEach(({ lCamel }) => sameCmdAndKey[1].modes.enable(lCamel));
 			} else {
 				const newId = crypto.randomUUID();
 				this.shortcutMap.set(newId, v);
