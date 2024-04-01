@@ -82,14 +82,10 @@ export class Shortcuts {
 	 * 入力キーとコマンドが同一のShortcutは、両方の有効になっているモードのフラグを立てた単一のShortcutに合成される。
 	 */
 	mergeShortcuts(shortcuts: Shortcut[]) {
-		const currentShortcuts: Readonly<[string, Shortcut][]> = Array.from(
-			this.shortcutMap.entries(),
-		);
-
 		const pushedShortcutId: string[] = [];
 
 		shortcuts.forEach((v) => {
-			const sameCmdAndKey = currentShortcuts.find(
+			const sameCmdAndKey = Array.from(this.shortcutMap.entries()).find(
 				([, { command, key }]) => command.eq(v.command) && key.eq(v.key),
 			);
 
@@ -98,11 +94,13 @@ export class Shortcuts {
 					.getEnables()
 					.forEach(({ lCamel }) => sameCmdAndKey[1].modes.enable(lCamel));
 				this.conflictionCheckList.add(sameCmdAndKey[0]);
+				console.log("m", sameCmdAndKey[1]);
 			} else {
 				const newId = crypto.randomUUID();
 				this.shortcutMap.set(newId, v);
 				this.conflictionCheckList.add(newId);
 				pushedShortcutId.push(newId);
+				console.log("n", v);
 			}
 		});
 
