@@ -8,7 +8,7 @@ import { Edit, Subject } from "@mui/icons-material";
 import {
 	Box,
 	Divider,
-	Sheet,
+	Stack,
 	Tab,
 	TabList,
 	TabPanel,
@@ -30,7 +30,7 @@ export default function Home() {
 
 	return (
 		<main>
-			<Sheet sx={{ margin: 3 }}>
+			<Stack sx={{ margin: 3, alignItems: "center" }}>
 				<Typography level={"h1"}>Mozc キー設定編集ツール</Typography>
 				<Divider sx={{ marginY: 2 }} />
 				<Tabs sx={{ maxWidth: 1360, minWidth: "fit-content" }}>
@@ -62,7 +62,7 @@ export default function Home() {
 						<TextViewer text={text} />
 					</TabPanel>
 				</Tabs>
-			</Sheet>
+			</Stack>
 		</main>
 	);
 }
