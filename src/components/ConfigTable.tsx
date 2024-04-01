@@ -28,7 +28,7 @@ export function ConfigTable({
 		(id: string) => {
 			setShortcuts((prev) => {
 				prev.shortcutMap.delete(id);
-				return prev.copy();
+				return prev.update();
 			});
 			setShortcutOrder((prev) => prev.filter((v) => v !== id));
 		},

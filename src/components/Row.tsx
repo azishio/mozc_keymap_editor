@@ -32,8 +32,7 @@ export function Row({
 				if (key) shortcut.key = key;
 				if (command) shortcut.command = command;
 
-				prev.checkConfliction();
-				return prev.copy();
+				return prev.update();
 			});
 		},
 		[shortcut, setShortcuts, id],

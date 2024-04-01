@@ -29,6 +29,7 @@ export class Shortcut {
  * インスタンスのアドレスが変ることで再レンダリングをトリガーする。
  */
 export class Shortcuts {
+	static header = "status\tkey\tcommand\n";
 	readonly conflictionCheckList: Set<string> = new Set();
 	conflictions: Map<string, Set<string>> = new Map();
 	readonly shortcutMap: Map<string, Shortcut> = new Map();
@@ -69,7 +70,11 @@ export class Shortcuts {
 					),
 			);
 
-		return [newInstance.mergeShortcuts(shortcuts), newInstance];
+		const newKeys = newInstance.mergeShortcuts(shortcuts);
+		newKeys.forEach((k) => newInstance.conflictionCheckList.add(k));
+		newInstance.checkConfliction();
+
+		return [newKeys, newInstance];
 	}
 
 	/**
@@ -92,6 +97,7 @@ export class Shortcuts {
 				v.modes
 					.getEnables()
 					.forEach(({ lCamel }) => sameCmdAndKey[1].modes.enable(lCamel));
+				this.conflictionCheckList.add(sameCmdAndKey[0]);
 			} else {
 				const newId = crypto.randomUUID();
 				this.shortcutMap.set(newId, v);
@@ -109,6 +115,7 @@ export class Shortcuts {
 	push(shortcut: Shortcut) {
 		const newId = crypto.randomUUID();
 		this.shortcutMap.set(newId, shortcut);
+		this.conflictionCheckList.add(newId);
 
 		return newId;
 	}
@@ -167,7 +174,8 @@ export class Shortcuts {
 	/**
 	 * 自身の内容をシャローコピーしたインスタンスを返す。
 	 */
-	copy() {
+	update() {
+		this.checkConfliction();
 		return new Shortcuts(this);
 	}
 
@@ -177,14 +185,38 @@ export class Shortcuts {
 	 */
 	silialize(order?: string[]) {
 		if (order) {
-			return order
-				.map((id) => {
-					const shortcut = this.shortcutMap.get(id);
+			return Shortcuts.header.concat(
+				order
+					.map((id) => {
+						const shortcut = this.shortcutMap.get(id);
 
-					if (!shortcut) return null;
+						if (!shortcut) return null;
 
-					const { modes, key, command } = shortcut;
+						const { modes, key, command } = shortcut;
 
+						if (
+							modes.getEnables().length === 0 ||
+							key.eq(new PressKey()) ||
+							command.getEnName() === null
+						)
+							return null;
+
+						return modes
+							.getEnables()
+							.map(
+								(mode) =>
+									`${mode.camel}\t${key.silialize()}\t${command.getEnName()}`,
+							)
+							.join("\n");
+					})
+					.filter((text) => text !== null)
+					.join("\n"),
+			);
+		}
+
+		return Shortcuts.header.concat(
+			[...this.shortcutMap.values()]
+				.map(({ modes, key, command }) => {
 					if (
 						modes.getEnables().length === 0 ||
 						key.eq(new PressKey()) ||
@@ -201,27 +233,7 @@ export class Shortcuts {
 						.join("\n");
 				})
 				.filter((text) => text !== null)
-				.join("\n");
-		}
-
-		return [...this.shortcutMap.values()]
-			.map(({ modes, key, command }) => {
-				if (
-					modes.getEnables().length === 0 ||
-					key.eq(new PressKey()) ||
-					command.getEnName() === null
-				)
-					return null;
-
-				return modes
-					.getEnables()
-					.map(
-						(mode) =>
-							`${mode.camel}\t${key.silialize()}\t${command.getEnName()}`,
-					)
-					.join("\n");
-			})
-			.filter((text) => text !== null)
-			.join("\n");
+				.join("\n"),
+		);
 	}
 }

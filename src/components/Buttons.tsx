@@ -68,7 +68,7 @@ export function Buttons({
 			]);
 
 			setShortcutOrder((prev) => prev.concat(newIdList));
-			return prev.copy();
+			return prev.update();
 		});
 	};
 
