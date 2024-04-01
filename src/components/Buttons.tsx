@@ -89,12 +89,13 @@ export function Buttons({
 							<Input
 								type={"file"}
 								sx={{ display: "none" }}
-								onChange={({ currentTarget: { files } }) => {
+								onChange={({ currentTarget }) => {
 									startNewFileTransition(() => {
 										setShortcuts(new Shortcuts());
 										setShortcutOrder([]);
-										mergeShortcuts(files);
+										mergeShortcuts(currentTarget.files);
 									});
+									currentTarget.value = "";
 								}}
 							/>
 							{newFileTransition ? <CircularProgress /> : <UploadFile />}
@@ -105,10 +106,11 @@ export function Buttons({
 							<Input
 								type={"file"}
 								sx={{ display: "none" }}
-								onChange={({ currentTarget: { files } }) => {
+								onChange={({ currentTarget }) => {
 									startAddFileTransition(async () => {
-										await mergeShortcuts(files);
+										await mergeShortcuts(currentTarget.files);
 									});
+									currentTarget.value = "";
 								}}
 							/>
 							{addFileTransition ? <CircularProgress /> : <Merge />}
