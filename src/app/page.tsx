@@ -1,10 +1,12 @@
 "use client";
 
 import { Shortcut, Shortcuts } from "@/classes/Shortcuts.ts";
+import { Buttons } from "@/components/Buttons.tsx";
 import { ConfigTable } from "@/components/ConfigTable.tsx";
 import { TextViewer } from "@/components/TextViewer.tsx";
 import { Edit, Subject } from "@mui/icons-material";
 import {
+	Box,
 	Divider,
 	Sheet,
 	Tab,
@@ -24,6 +26,8 @@ export default function Home() {
 		return shortcuts;
 	});
 
+	const text = shortcuts.silialize(shortcutOrder);
+
 	return (
 		<main>
 			<Sheet sx={{ margin: 3 }}>
@@ -38,6 +42,10 @@ export default function Home() {
 							<Typography startDecorator={<Subject />}>出力</Typography>
 						</Tab>
 					</TabList>
+					<Box position={"absolute"} right={15} top={-8}>
+						<Buttons text={text} />
+					</Box>
+
 					<TabPanel value={0}>
 						<ConfigTable
 							setShortcutOrder={setShortcutOrder}
@@ -47,7 +55,7 @@ export default function Home() {
 						/>
 					</TabPanel>
 					<TabPanel value={1}>
-						<TextViewer text={shortcuts.silialize(shortcutOrder)} />
+						<TextViewer text={text} />
 					</TabPanel>
 				</Tabs>
 			</Sheet>
