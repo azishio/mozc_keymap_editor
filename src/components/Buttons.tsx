@@ -1,4 +1,4 @@
-import { Shortcut, Shortcuts } from "@/classes/Shortcuts.ts";
+import { Keymap, Keymaps } from "@/classes/Keymaps.ts";
 import {
 	ContentCopy,
 	Download,
@@ -26,12 +26,12 @@ import {
 
 export function Buttons({
 	text,
-	setShortcuts,
-	setShortcutOrder,
+	setKeymaps,
+	setKeymapOrder,
 }: {
 	text: string;
-	setShortcuts: Dispatch<SetStateAction<Shortcuts>>;
-	setShortcutOrder: Dispatch<SetStateAction<string[]>>;
+	setKeymaps: Dispatch<SetStateAction<Keymaps>>;
+	setKeymapOrder: Dispatch<SetStateAction<string[]>>;
 }) {
 	const [openCopiedSnackbar, setOpenCopiedSnackbar] = useState(false);
 	const [openInvalidFileSnackbar, setOpenInvalidFileSnackbar] = useState(false);
@@ -53,14 +53,14 @@ export function Buttons({
 	const [newFileTransition, startNewFileTransition] = useTransition();
 	const [addFileTransition, startAddFileTransition] = useTransition();
 
-	const resetShortcuts = () => {
-		const shortcuts = new Shortcuts();
-		const newId = shortcuts.push(new Shortcut());
-		setShortcuts(shortcuts);
-		setShortcutOrder([newId]);
+	const resetKeymaps = () => {
+		const newInstance = new Keymaps();
+		const newId = newInstance.push(new Keymap());
+		setKeymaps(newInstance);
+		setKeymapOrder([newId]);
 	};
 
-	const mergeShortcuts = async (files: FileList | null) => {
+	const mergeKeymaps = async (files: FileList | null) => {
 		if (!files || files.length === 0) return;
 
 		if (files[0].type !== "text/plain") {
@@ -70,12 +70,12 @@ export function Buttons({
 
 		const text = await files[0].text();
 
-		setShortcuts((prev) => {
-			const newIdList = prev.mergeShortcuts([
-				...Shortcuts.fromText(text)[1].shortcutMap.values(),
+		setKeymaps((prev) => {
+			const newIdList = prev.merge([
+				...Keymaps.fromText(text)[1].keymapMap.values(),
 			]);
 
-			setShortcutOrder((prev) => prev.concat(newIdList));
+			setKeymapOrder((prev) => prev.concat(newIdList));
 			return prev.update();
 		});
 	};
@@ -91,9 +91,9 @@ export function Buttons({
 								sx={{ display: "none" }}
 								onChange={({ currentTarget }) => {
 									startNewFileTransition(() => {
-										setShortcuts(new Shortcuts());
-										setShortcutOrder([]);
-										mergeShortcuts(currentTarget.files);
+										setKeymaps(new Keymaps());
+										setKeymapOrder([]);
+										mergeKeymaps(currentTarget.files);
 									});
 									currentTarget.value = "";
 								}}
@@ -108,7 +108,7 @@ export function Buttons({
 								sx={{ display: "none" }}
 								onChange={({ currentTarget }) => {
 									startAddFileTransition(async () => {
-										await mergeShortcuts(currentTarget.files);
+										await mergeKeymaps(currentTarget.files);
 									});
 									currentTarget.value = "";
 								}}
@@ -120,7 +120,7 @@ export function Buttons({
 
 				<ButtonGroup>
 					<Tooltip title={"全て削除"}>
-						<IconButton onClick={() => resetShortcuts()}>
+						<IconButton onClick={() => resetKeymaps()}>
 							<RestartAlt />
 						</IconButton>
 					</Tooltip>

@@ -1,4 +1,4 @@
-import type { Shortcut, Shortcuts } from "@/classes/Shortcuts.ts";
+import type { Keymap, Keymaps } from "@/classes/Keymaps.ts";
 import { CommandSelector } from "@/components/CommandSelector";
 import { KeySelector } from "@/components/KeySelector";
 import { ModeSelector } from "@/components/ModeSelector";
@@ -10,32 +10,32 @@ export function Row({
 	order,
 	id,
 	confliction,
-	shortcut,
-	setShortcuts,
-	deleteShortcut,
+	keymap,
+	setKeymaps,
+	deleteKeymap,
 }: {
 	order: number;
 	id: string;
 	confliction: number[] | null;
-	shortcut: Shortcut;
-	setShortcuts: Dispatch<SetStateAction<Shortcuts>>;
-	deleteShortcut: (id: string) => void;
+	keymap: Keymap;
+	setKeymaps: Dispatch<SetStateAction<Keymaps>>;
+	deleteKeymap: (id: string) => void;
 }) {
-	const { modes, key, command } = shortcut;
+	const { modes, key, command } = keymap;
 
 	const setState = useCallback(
-		({ modes, key, command }: Partial<Shortcut>) => {
-			setShortcuts((prev) => {
-				prev.conflictionCheckList.add(id);
+		({ modes, key, command }: Partial<Keymap>) => {
+			setKeymaps((prev) => {
+				prev.conflictCheckList.add(id);
 
-				if (modes) shortcut.modes = modes;
-				if (key) shortcut.key = key;
-				if (command) shortcut.command = command;
+				if (modes) keymap.modes = modes;
+				if (key) keymap.key = key;
+				if (command) keymap.command = command;
 
 				return prev.update();
 			});
 		},
-		[shortcut, setShortcuts, id],
+		[keymap, setKeymaps, id],
 	);
 
 	return (
@@ -68,7 +68,7 @@ export function Row({
 				<CommandSelector command={command} setState={setState} />
 			</td>
 			<td>
-				<IconButton onClick={() => deleteShortcut(id)}>
+				<IconButton onClick={() => deleteKeymap(id)}>
 					<RemoveCircle />
 				</IconButton>
 			</td>

@@ -1,4 +1,4 @@
-import type { Shortcut } from "@/classes/Shortcuts.ts";
+import type { Keymap } from "@/classes/Keymaps.ts";
 import { MozcModes } from "@/classes/mozcModes.ts";
 import { Checkbox, Sheet, Stack, Typography } from "@mui/joy";
 import { memo } from "react";
@@ -9,7 +9,7 @@ export const ModeSelector = memo(
 		setState,
 	}: {
 		modes: MozcModes;
-		setState: ({ modes, key, command }: Partial<Shortcut>) => void;
+		setState: ({ modes, key, command }: Partial<Keymap>) => void;
 	}) {
 		return (
 			<Stack

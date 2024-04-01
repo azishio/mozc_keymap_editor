@@ -1,4 +1,4 @@
-import type { Shortcut } from "@/classes/Shortcuts.ts";
+import type { Keymap } from "@/classes/Keymaps.ts";
 import { PressKey } from "@/classes/pressKey";
 import { Chip, Input, Snackbar, Stack } from "@mui/joy";
 import { memo, useState } from "react";
@@ -10,7 +10,7 @@ export const KeySelector = memo(
 	}: {
 		pressKey: PressKey;
 
-		setState: ({ modes, key, command }: Partial<Shortcut>) => void;
+		setState: ({ modes, key, command }: Partial<Keymap>) => void;
 	}) {
 		const [IMEEnable, setIMEEnable] = useState(false);
 

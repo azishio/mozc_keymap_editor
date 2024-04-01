@@ -5,7 +5,7 @@ import Head from "next/head";
 import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
-	title: "Mozc Shortcut Editor",
+	title: "Mozc Keymap Editor",
 	description: "Mozcのキー設定ファイル用のエディタ",
 };
 

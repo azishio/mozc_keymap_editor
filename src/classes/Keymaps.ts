@@ -9,7 +9,7 @@ import { PressKey } from "@/classes/pressKey.ts";
  * 内容を変更する再は、プロパティ自体を書き変える。
  * インスタンスのライフタイムは1行まるごと再レンダリングされるまでの期間と一致する必要がある。
  */
-export class Shortcut {
+export class Keymap {
 	constructor(
 		public modes: MozcModes = new MozcModes(),
 		public key: PressKey = new PressKey(),
@@ -17,7 +17,7 @@ export class Shortcut {
 	) {}
 
 	copy() {
-		return new Shortcut(this.modes, this.key, this.command);
+		return new Keymap(this.modes, this.key, this.command);
 	}
 }
 
@@ -28,50 +28,50 @@ export class Shortcut {
  * 状態が変ったら新しいインスタンスを作ってそれを使用すること。
  * インスタンスのアドレスが変ることで再レンダリングをトリガーする。
  */
-export class Shortcuts {
+export class Keymaps {
 	static header = "status\tkey\tcommand\n";
-	readonly conflictionCheckList: Set<string> = new Set();
+	readonly conflictCheckList: Set<string> = new Set();
 	conflictions: Map<string, Set<string>> = new Map();
-	readonly shortcutMap: Map<string, Shortcut> = new Map();
+	readonly keymapMap: Map<string, Keymap> = new Map();
 
-	constructor(shortcuts?: Shortcuts) {
-		if (!shortcuts) return;
+	constructor(keymaps?: Keymaps) {
+		if (!keymaps) return;
 
-		this.conflictionCheckList = shortcuts.conflictionCheckList;
-		this.conflictions = shortcuts.conflictions;
-		this.shortcutMap = shortcuts.shortcutMap;
+		this.conflictCheckList = keymaps.conflictCheckList;
+		this.conflictions = keymaps.conflictions;
+		this.keymapMap = keymaps.keymapMap;
 	}
 
 	/**
 	 * キーマップが記述されたテキストからインスタンスを生成する。
-	 * 無効な行は空のShortcutとして扱われる。
+	 * 無効な行は空のKeymapとして扱われる。
 	 *
-	 * @return [Shortcutに割り当てられたIDの配列, 自身のインスタンス]
+	 * @return [Keymapに割り当てられたIDの配列, 自身のインスタンス]
 	 *
 	 * @remarks
 	 * 2行目以降は`/(?<mode>[a-zA-Z]+)\t(?<combinationKey>[a-zA-Z]+ )*(?<key>[a-zA-Z]+)\t(?<command>[a-zA-Z]+)/`に一致することを期待する。
 	 * 内部的には、`\t`で区切った後で`[mode,key,command]`であることを前提に解析される。
 	 * それぞれ無効な文字列であった場合、その項目は初期状態(無選択状態)になる。
 	 */
-	static fromText(keymap: string): [string[], Shortcuts] {
-		const newInstance = new Shortcuts();
+	static fromText(keymap: string): [string[], Keymaps] {
+		const newInstance = new Keymaps();
 
 		const [, ...line] = keymap.split("\n");
 
-		const shortcuts: Shortcut[] = line
+		const keymapListFromText: Keymap[] = line
 			.filter((s) => s !== "")
 			.map((s) => s.split("\t"))
 			.map(
 				([mode, keys, command]) =>
-					new Shortcut(
+					new Keymap(
 						MozcModes.fromText(mode),
 						PressKey.fromText(keys),
 						MozcCommand.fromText(command),
 					),
 			);
 
-		const newKeys = newInstance.mergeShortcuts(shortcuts);
-		newKeys.forEach((k) => newInstance.conflictionCheckList.add(k));
+		const newKeys = newInstance.merge(keymapListFromText);
+		newKeys.forEach((k) => newInstance.conflictCheckList.add(k));
 		newInstance.checkConfliction();
 
 		return [newKeys, newInstance];
@@ -79,13 +79,14 @@ export class Shortcuts {
 
 	/**
 	 * 自身と与えられたインスタンスの内容を併せたインスタンスを返す。
-	 * 入力キーとコマンドが同一のShortcutは、両方の有効になっているモードのフラグを立てた単一のShortcutに合成される。
+	 * 入力キーとコマンドが同一のKeymapは、両方の有効になっているモードのフラグを立てた単一のKeymapに合成される。
 	 */
-	mergeShortcuts(shortcuts: Shortcut[]) {
-		const pushedShortcutId: string[] = [];
+	merge(keymapList: Keymap[]) {
+		// 新しく追加されたKeymapに割り当てられたid
+		const pushedKeymapId: string[] = [];
 
-		shortcuts.forEach((v) => {
-			const sameCmdAndKey = Array.from(this.shortcutMap.entries()).find(
+		keymapList.forEach((v) => {
+			const sameCmdAndKey = Array.from(this.keymapMap.entries()).find(
 				([, { command, key }]) => command.eq(v.command) && key.eq(v.key),
 			);
 
@@ -93,104 +94,105 @@ export class Shortcuts {
 				v.modes
 					.getEnables()
 					.forEach(({ lCamel }) => sameCmdAndKey[1].modes.enable(lCamel));
-				this.conflictionCheckList.add(sameCmdAndKey[0]);
+				this.conflictCheckList.add(sameCmdAndKey[0]);
 				console.log("m", sameCmdAndKey[1]);
 			} else {
 				const newId = crypto.randomUUID();
-				this.shortcutMap.set(newId, v);
-				this.conflictionCheckList.add(newId);
-				pushedShortcutId.push(newId);
+				this.keymapMap.set(newId, v);
+				this.conflictCheckList.add(newId);
+				pushedKeymapId.push(newId);
 				console.log("n", v);
 			}
 		});
 
-		return pushedShortcutId;
+		return pushedKeymapId;
 	}
 
 	/**
-	 * 与えられたShortcutのインスタンスを自身の管理下におき、割り当てたIDを返す。
+	 * 与えられたKeymapのインスタンスを自身の管理下におき、割り当てたIDを返す。
 	 */
-	push(shortcut: Shortcut) {
+	push(keymap: Keymap) {
 		const newId = crypto.randomUUID();
-		this.shortcutMap.set(newId, shortcut);
-		this.conflictionCheckList.add(newId);
+		this.keymapMap.set(newId, keymap);
+		this.conflictCheckList.add(newId);
 
 		return newId;
 	}
 
 	/**
-	 * モードと入力キーが同一で、コマンドが違うShortcutを探す
+	 * モードと入力キーが同一で、コマンドが違うKeymapを探す
 	 */
 	checkConfliction() {
-		const currentShortcuts: Readonly<[string, Shortcut][]> = Array.from(
-			this.shortcutMap.entries(),
+		const currentKeymapList: Readonly<[string, Keymap][]> = Array.from(
+			this.keymapMap.entries(),
 		);
 
-		const conflictions: Map<string, Set<string>> = new Map();
+		const conflictingKeymaps: Map<string, Set<string>> = new Map();
 
-		this.conflictionCheckList.forEach((checkTargetId) => {
-			const checkTarget = this.shortcutMap.get(checkTargetId);
+		this.conflictCheckList.forEach((checkTargetId) => {
+			const checkTarget = this.keymapMap.get(checkTargetId);
 			if (!checkTarget) {
-				this.conflictionCheckList.delete(checkTargetId);
+				this.conflictCheckList.delete(checkTargetId);
 				return;
 			}
 
-			const conflictionShortcuts = currentShortcuts.filter(
+			const conflictingKeymapList = currentKeymapList.filter(
 				([id, { modes, key }]) =>
 					modes.hasSame(checkTarget.modes) &&
 					key.eq(checkTarget.key) &&
 					id !== checkTargetId,
 			);
 
-			if (conflictionShortcuts.length === 0) {
-				this.conflictionCheckList.delete(checkTargetId);
+			if (conflictingKeymapList.length === 0) {
+				this.conflictCheckList.delete(checkTargetId);
 				return;
 			}
 
-			conflictions.set(
+			conflictingKeymaps.set(
 				checkTargetId,
-				new Set(conflictionShortcuts.map(([id]) => id)),
+				new Set(conflictingKeymapList.map(([id]) => id)),
 			);
 
-			conflictionShortcuts.forEach(([id]) => {
+			conflictingKeymapList.forEach(([id]) => {
 				if (id === checkTargetId) return;
 
-				const target = conflictions.get(id);
+				const target = conflictingKeymaps.get(id);
 				if (target) {
 					target.add(checkTargetId);
 				} else {
-					conflictions.set(id, new Set([checkTargetId]));
+					conflictingKeymaps.set(id, new Set([checkTargetId]));
 				}
 
-				this.conflictionCheckList.add(id);
+				this.conflictCheckList.add(id);
 			});
 		});
 
-		this.conflictions = conflictions;
+		this.conflictions = conflictingKeymaps;
 	}
 
 	/**
-	 * 自身の内容をシャローコピーしたインスタンスを返す。
+	 * 競合チェックをした後で、自身の内容をシャローコピーしたインスタンスを返す。
 	 */
 	update() {
 		this.checkConfliction();
-		return new Shortcuts(this);
+		return new Keymaps(this);
 	}
 
 	/**
-	 * 自身が管理するshortcutを全て文字列に起す。
-	 * 完全でない(全てのモードのフラグが降りている/入力キーが未指定/コマンドが未指定)shortcutは無視される。
+	 * 自身が管理するKeymapを全て文字列に起こす。
+	 * idの配列を渡すと、その順番で文字起こしする。
+	 * 完全でない(全てのモードのフラグが降りている/入力キーが未指定/コマンドが未指定)keymapは無視される。
 	 */
-	silialize(order?: string[]) {
+	serialize(order?: string[]) {
 		if (order) {
-			return Shortcuts.header.concat(
+			return Keymaps.header.concat(
 				order
 					.map((id) => {
-						const shortcut = this.shortcutMap.get(id);
+						const keymap = this.keymapMap.get(id);
 
-						if (!shortcut) return null;
+						if (!keymap) return null;
 
-						const { modes, key, command } = shortcut;
+						const { modes, key, command } = keymap;
 
 						if (
 							modes.getEnables().length === 0 ||
@@ -212,8 +214,8 @@ export class Shortcuts {
 			);
 		}
 
-		return Shortcuts.header.concat(
-			[...this.shortcutMap.values()]
+		return Keymaps.header.concat(
+			[...this.keymapMap.values()]
 				.map(({ modes, key, command }) => {
 					if (
 						modes.getEnables().length === 0 ||

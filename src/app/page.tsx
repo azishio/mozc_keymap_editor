@@ -1,6 +1,6 @@
 "use client";
 
-import { Shortcut, Shortcuts } from "@/classes/Shortcuts.ts";
+import { Keymap, Keymaps } from "@/classes/Keymaps.ts";
 import { Buttons } from "@/components/Buttons.tsx";
 import { ConfigTable } from "@/components/ConfigTable.tsx";
 import { TextViewer } from "@/components/TextViewer.tsx";
@@ -18,15 +18,15 @@ import {
 import { useState } from "react";
 
 export default function Home() {
-	const [shortcutOrder, setShortcutOrder] = useState<string[]>([]);
-	const [shortcuts, setShortcuts] = useState(() => {
-		const shortcuts = new Shortcuts();
-		const newId = shortcuts.push(new Shortcut());
-		setShortcutOrder([newId]);
-		return shortcuts;
+	const [keymapOrder, setKeymapOrder] = useState<string[]>([]);
+	const [keymaps, setKeymaps] = useState(() => {
+		const newInstance = new Keymaps();
+		const newId = newInstance.push(new Keymap());
+		setKeymapOrder([newId]);
+		return newInstance;
 	});
 
-	const text = shortcuts.silialize(shortcutOrder);
+	const text = keymaps.serialize(keymapOrder);
 
 	return (
 		<main>
@@ -45,17 +45,17 @@ export default function Home() {
 					<Box position={"absolute"} right={15} top={-8}>
 						<Buttons
 							text={text}
-							setShortcuts={setShortcuts}
-							setShortcutOrder={setShortcutOrder}
+							setKeymaps={setKeymaps}
+							setKeymapOrder={setKeymapOrder}
 						/>
 					</Box>
 
 					<TabPanel value={0}>
 						<ConfigTable
-							setShortcutOrder={setShortcutOrder}
-							shortcuts={shortcuts}
-							setShortcuts={setShortcuts}
-							shortcutOrder={shortcutOrder}
+							setKeymapOrder={setKeymapOrder}
+							keymaps={keymaps}
+							setKeymaps={setKeymaps}
+							keymapOrder={keymapOrder}
 						/>
 					</TabPanel>
 					<TabPanel value={1}>

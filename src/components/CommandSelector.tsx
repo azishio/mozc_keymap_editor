@@ -1,4 +1,4 @@
-import type { Shortcut } from "@/classes/Shortcuts.ts";
+import type { Keymap } from "@/classes/Keymaps.ts";
 import { MozcCommand } from "@/classes/mozcCommand.ts";
 import {
 	Check,
@@ -31,7 +31,7 @@ export const CommandSelector = memo(
 		setState,
 	}: {
 		command: MozcCommand;
-		setState: ({ modes, key, command }: Partial<Shortcut>) => void;
+		setState: ({ modes, key, command }: Partial<Keymap>) => void;
 	}) {
 		const [expand, setExpand] = useState<
 			(typeof MozcCommand.mozcCommandCategories)[number]["category"] | null

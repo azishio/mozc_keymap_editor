@@ -1,4 +1,4 @@
-import { Shortcut, type Shortcuts } from "@/classes/Shortcuts.ts";
+import { Keymap, type Keymaps } from "@/classes/Keymaps.ts";
 import { Row } from "@/components/Row";
 import { AddCircleOutline, DeleteForever } from "@mui/icons-material";
 import { IconButton, Sheet, Stack, Table, Typography } from "@mui/joy";
@@ -10,29 +10,29 @@ import {
 } from "react";
 
 export function ConfigTable({
-	shortcutOrder,
-	setShortcutOrder,
-	shortcuts,
-	setShortcuts,
+	keymapOrder,
+	setKeymapOrder,
+	keymaps,
+	setKeymaps,
 }: {
-	shortcutOrder: string[];
-	setShortcutOrder: Dispatch<SetStateAction<string[]>>;
-	shortcuts: Shortcuts;
-	setShortcuts: Dispatch<SetStateAction<Shortcuts>>;
+	keymapOrder: string[];
+	setKeymapOrder: Dispatch<SetStateAction<string[]>>;
+	keymaps: Keymaps;
+	setKeymaps: Dispatch<SetStateAction<Keymaps>>;
 }) {
 	useEffect(() => {
-		console.log(shortcuts.silialize());
-	}, [shortcuts]);
+		console.log(keymaps.serialize());
+	}, [keymaps]);
 
-	const deleteShortcut = useCallback(
+	const deleteKeymap = useCallback(
 		(id: string) => {
-			setShortcuts((prev) => {
-				prev.shortcutMap.delete(id);
+			setKeymaps((prev) => {
+				prev.keymapMap.delete(id);
 				return prev.update();
 			});
-			setShortcutOrder((prev) => prev.filter((v) => v !== id));
+			setKeymapOrder((prev) => prev.filter((v) => v !== id));
 		},
-		[setShortcuts, setShortcutOrder],
+		[setKeymaps, setKeymapOrder],
 	);
 
 	return (
@@ -90,26 +90,26 @@ export function ConfigTable({
 						</tr>
 					</thead>
 					<tbody>
-						{shortcutOrder.map((id, order) => {
-							const shortcut = shortcuts.shortcutMap.get(id);
-							if (!shortcut) return null;
-							const confliction = shortcuts.conflictions.get(id);
+						{keymapOrder.map((id, order) => {
+							const keymap = keymaps.keymapMap.get(id);
+							if (!keymap) return null;
+							const confliction = keymaps.conflictions.get(id);
 							return (
 								<Row
 									key={id}
 									id={id}
 									order={order}
-									deleteShortcut={deleteShortcut}
+									deleteKeymap={deleteKeymap}
 									confliction={
 										confliction
 											? [...confliction.keys()]
-													.map((id) => shortcutOrder.findIndex((i) => i === id))
+													.map((id) => keymapOrder.findIndex((i) => i === id))
 													.filter((index) => index !== -1)
 													.sort((a, b) => a - b)
 											: null
 									}
-									shortcut={shortcut}
-									setShortcuts={setShortcuts}
+									keymap={keymap}
+									setKeymaps={setKeymaps}
 								/>
 							);
 						})}
@@ -119,8 +119,8 @@ export function ConfigTable({
 			<IconButton
 				size={"lg"}
 				onClick={() => {
-					const newId = shortcuts.push(new Shortcut());
-					setShortcutOrder((prev) => [...prev, newId]);
+					const newId = keymaps.push(new Keymap());
+					setKeymapOrder((prev) => [...prev, newId]);
 				}}
 			>
 				<AddCircleOutline />
