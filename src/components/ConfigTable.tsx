@@ -32,7 +32,7 @@ export function ConfigTable({
 			});
 			setShortcutOrder((prev) => prev.filter((v) => v !== id));
 		},
-		[setShortcuts],
+		[setShortcuts, setShortcutOrder],
 	);
 
 	return (

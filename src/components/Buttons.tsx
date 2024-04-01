@@ -1,5 +1,3 @@
-"use client";
-
 import { Shortcut, Shortcuts } from "@/classes/Shortcuts.ts";
 import {
 	ContentCopy,
