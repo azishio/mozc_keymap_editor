@@ -43,7 +43,11 @@ export default function Home() {
 						</Tab>
 					</TabList>
 					<Box position={"absolute"} right={15} top={-8}>
-						<Buttons text={text} />
+						<Buttons
+							text={text}
+							setShortcuts={setShortcuts}
+							setShortcutOrder={setShortcutOrder}
+						/>
 					</Box>
 
 					<TabPanel value={0}>
