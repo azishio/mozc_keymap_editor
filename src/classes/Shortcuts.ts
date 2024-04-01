@@ -2,6 +2,13 @@ import { MozcCommand } from "@/classes/mozcCommand.ts";
 import { MozcModes } from "@/classes/mozcModes.ts";
 import { PressKey } from "@/classes/pressKey.ts";
 
+/**
+ * 1種類のキーマップを表すクラス
+ *
+ * @remarks
+ * 内容を変更する再は、プロパティ自体を書き変える。
+ * インスタンスのライフタイムは1行まるごと再レンダリングされるまでの期間と一致する必要がある。
+ */
 export class Shortcut {
 	constructor(
 		public modes: MozcModes = new MozcModes(),
@@ -14,6 +21,13 @@ export class Shortcut {
 	}
 }
 
+/**
+ * キーマップの集合を管理するクラス。
+ *
+ * @remarks
+ * 状態が変ったら新しいインスタンスを作ってそれを使用すること。
+ * インスタンスのアドレスが変ることで再レンダリングをトリガーする。
+ */
 export class Shortcuts {
 	readonly conflictionCheckList: Set<string> = new Set();
 	conflictions: Map<string, Set<string>> = new Map();
@@ -27,8 +41,19 @@ export class Shortcuts {
 		this.shortcutMap = shortcuts.shortcutMap;
 	}
 
-	static fromText(keymap?: string) {
-		if (!keymap) return;
+	/**
+	 * キーマップが記述されたテキストからインスタンスを生成する。
+	 * 無効な行は空のShortcutとして扱われる。
+	 *
+	 * @return [Shortcutに割り当てられたIDの配列, 自身のインスタンス]
+	 *
+	 * @remarks
+	 * 2行目以降は`/(?<mode>[a-zA-Z]+)\t(?<combinationKey>[a-zA-Z]+ )*(?<key>[a-zA-Z]+)\t(?<command>[a-zA-Z]+)/`に一致することを期待する。
+	 * 内部的には、`\t`で区切った後で`[mode,key,command]`であることを前提に解析される。
+	 * それぞれ無効な文字列であった場合、その項目は初期状態(無選択状態)になる。
+	 */
+	static fromText(keymap: string): [string[], Shortcuts] {
+		const newInstance = new Shortcuts();
 
 		const [, ...line] = keymap.split("\n");
 
@@ -36,17 +61,21 @@ export class Shortcuts {
 			.filter((s) => s !== "")
 			.map((s) => s.split("\t"))
 			.map(
-				([modes, keys, command]) =>
+				([mode, keys, command]) =>
 					new Shortcut(
-						MozcModes.fromText(modes),
+						MozcModes.fromText(mode),
 						PressKey.fromText(keys),
 						MozcCommand.fromText(command),
 					),
 			);
 
-		return new Shortcuts().mergeShortcuts(shortcuts);
+		return [newInstance.mergeShortcuts(shortcuts), newInstance];
 	}
 
+	/**
+	 * 自身と与えられたインスタンスの内容を併せたインスタンスを返す。
+	 * 入力キーとコマンドが同一のShortcutは、両方の有効になっているモードのフラグを立てた単一のShortcutに合成される。
+	 */
 	mergeShortcuts(shortcuts: Shortcut[]) {
 		const currentShortcuts: Readonly<[string, Shortcut][]> = Array.from(
 			this.shortcutMap.entries(),
@@ -74,6 +103,9 @@ export class Shortcuts {
 		return pushedShortcutId;
 	}
 
+	/**
+	 * 与えられたShortcutのインスタンスを自身の管理下におき、割り当てたIDを返す。
+	 */
 	push(shortcut: Shortcut) {
 		const newId = crypto.randomUUID();
 		this.shortcutMap.set(newId, shortcut);
@@ -81,6 +113,9 @@ export class Shortcuts {
 		return newId;
 	}
 
+	/**
+	 * モードと入力キーが同一で、コマンドが違うShortcutを探す
+	 */
 	checkConfliction() {
 		const currentShortcuts: Readonly<[string, Shortcut][]> = Array.from(
 			this.shortcutMap.entries(),
@@ -129,10 +164,17 @@ export class Shortcuts {
 		this.conflictions = conflictions;
 	}
 
+	/**
+	 * 自身の内容をシャローコピーしたインスタンスを返す。
+	 */
 	copy() {
 		return new Shortcuts(this);
 	}
 
+	/**
+	 * 自身が管理するshortcutを全て文字列に起す。
+	 * 完全でない(全てのモードのフラグが降りている/入力キーが未指定/コマンドが未指定)shortcutは無視される。
+	 */
 	silialize(order?: string[]) {
 		if (order) {
 			return order
