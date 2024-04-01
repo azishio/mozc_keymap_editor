@@ -8,6 +8,7 @@ import {
 } from "@mui/icons-material";
 import {
 	ButtonGroup,
+	CircularProgress,
 	IconButton,
 	Input,
 	Link,
@@ -15,7 +16,13 @@ import {
 	Stack,
 	Tooltip,
 } from "@mui/joy";
-import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
+import {
+	type Dispatch,
+	type SetStateAction,
+	useEffect,
+	useState,
+	useTransition,
+} from "react";
 
 export function Buttons({
 	text,
@@ -42,6 +49,9 @@ export function Buttons({
 			return URL.createObjectURL(new Blob([text], { type: "text/plain" }));
 		});
 	}, [text]);
+
+	const [newFileTransition, startNewFileTransition] = useTransition();
+	const [addFileTransition, startAddFileTransition] = useTransition();
 
 	const resetShortcuts = () => {
 		const shortcuts = new Shortcuts();
@@ -80,12 +90,14 @@ export function Buttons({
 								type={"file"}
 								sx={{ display: "none" }}
 								onChange={({ currentTarget: { files } }) => {
-									setShortcuts(new Shortcuts());
-									setShortcutOrder([]);
-									mergeShortcuts(files);
+									startNewFileTransition(() => {
+										setShortcuts(new Shortcuts());
+										setShortcutOrder([]);
+										mergeShortcuts(files);
+									});
 								}}
 							/>
-							<UploadFile />
+							{newFileTransition ? <CircularProgress /> : <UploadFile />}
 						</IconButton>
 					</Tooltip>
 					<Tooltip title={"追加"}>
@@ -93,11 +105,13 @@ export function Buttons({
 							<Input
 								type={"file"}
 								sx={{ display: "none" }}
-								onChange={({ currentTarget: { files } }) =>
-									mergeShortcuts(files)
-								}
+								onChange={({ currentTarget: { files } }) => {
+									startAddFileTransition(async () => {
+										await mergeShortcuts(files);
+									});
+								}}
 							/>
-							<Merge />
+							{addFileTransition ? <CircularProgress /> : <Merge />}
 						</IconButton>
 					</Tooltip>
 				</ButtonGroup>
