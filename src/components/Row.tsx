@@ -52,6 +52,8 @@ export function Row({
 							variant={"plain"}
 							sx={{ position: "absolute", top: -30 }}
 						>
+							{/* 恐らくMUI用のキーワードを強制しようとしている */
+							/* @ts-ignore */}
 							<Report color={"danger"} />
 						</Tooltip>
 					)}
