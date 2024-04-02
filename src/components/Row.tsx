@@ -2,6 +2,7 @@ import type { Keymap, Keymaps } from "@/classes/Keymaps.ts";
 import { CommandSelector } from "@/components/CommandSelector";
 import { KeySelector } from "@/components/KeySelector";
 import { ModeSelector } from "@/components/ModeSelector";
+import { SortableTr } from "@/components/SortableTr.tsx";
 import { RemoveCircle, Report } from "@mui/icons-material";
 import { IconButton, Stack, Tooltip, Typography } from "@mui/joy";
 import React, { type Dispatch, type SetStateAction, useCallback } from "react";
@@ -39,7 +40,7 @@ export function Row({
 	);
 
 	return (
-		<tr>
+		<SortableTr id={id}>
 			<td>
 				<Stack position={"relative"} alignItems={"center"}>
 					{confliction && (
@@ -74,6 +75,6 @@ export function Row({
 					<RemoveCircle />
 				</IconButton>
 			</td>
-		</tr>
+		</SortableTr>
 	);
 }

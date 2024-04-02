@@ -1,5 +1,6 @@
 import { Keymap, type Keymaps } from "@/classes/Keymaps.ts";
 import { Row } from "@/components/Row";
+import { SortableProvider } from "@/components/SortableProvider.tsx";
 import { AddCircleOutline, DeleteForever } from "@mui/icons-material";
 import { IconButton, Sheet, Stack, Table, Typography } from "@mui/joy";
 import {
@@ -90,29 +91,31 @@ export function ConfigTable({
 						</tr>
 					</thead>
 					<tbody>
-						{keymapOrder.map((id, order) => {
-							const keymap = keymaps.keymapMap.get(id);
-							if (!keymap) return null;
-							const confliction = keymaps.conflictions.get(id);
-							return (
-								<Row
-									key={id}
-									id={id}
-									order={order}
-									deleteKeymap={deleteKeymap}
-									confliction={
-										confliction
-											? [...confliction.keys()]
-													.map((id) => keymapOrder.findIndex((i) => i === id))
-													.filter((index) => index !== -1)
-													.sort((a, b) => a - b)
-											: null
-									}
-									keymap={keymap}
-									setKeymaps={setKeymaps}
-								/>
-							);
-						})}
+						<SortableProvider items={keymapOrder} setItems={setKeymapOrder}>
+							{keymapOrder.map((id, order) => {
+								const keymap = keymaps.keymapMap.get(id);
+								if (!keymap) return null;
+								const confliction = keymaps.conflictions.get(id);
+								return (
+									<Row
+										key={id}
+										id={id}
+										order={order}
+										deleteKeymap={deleteKeymap}
+										confliction={
+											confliction
+												? [...confliction.keys()]
+														.map((id) => keymapOrder.findIndex((i) => i === id))
+														.filter((index) => index !== -1)
+														.sort((a, b) => a - b)
+												: null
+										}
+										keymap={keymap}
+										setKeymaps={setKeymaps}
+									/>
+								);
+							})}
+						</SortableProvider>
 					</tbody>
 				</Table>
 			</Sheet>
