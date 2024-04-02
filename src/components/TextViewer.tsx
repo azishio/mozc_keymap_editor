@@ -1,3 +1,4 @@
+import { Keymaps } from "@/classes/Keymaps.ts";
 import { Sheet, Typography } from "@mui/joy";
 
 export function TextViewer({ text }: { text: string }) {
@@ -13,7 +14,7 @@ export function TextViewer({ text }: { text: string }) {
 				}}
 			>
 				<Typography component={"pre"} sx={{ margin: 3 }}>
-					{text !== "" ? text : "※ 有効なキー設定がありません"}
+					{text !== Keymaps.header ? text : "※ 有効なキー設定がありません"}
 				</Typography>
 			</Sheet>
 		</>
