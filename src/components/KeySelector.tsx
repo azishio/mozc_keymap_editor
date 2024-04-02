@@ -1,6 +1,6 @@
 import type { Keymap } from "@/classes/Keymaps.ts";
 import { PressKey } from "@/classes/pressKey";
-import { Chip, Input, Snackbar, Stack } from "@mui/joy";
+import { Chip, Input, Snackbar, Stack, inputClasses } from "@mui/joy";
 import { memo, useState } from "react";
 
 export const KeySelector = memo(
@@ -17,7 +17,11 @@ export const KeySelector = memo(
 		return (
 			<>
 				<Input
-					sx={{ "caret-color": "transparent", width: 250 }}
+					sx={{
+						caretColor: "transparent",
+						[`& .${inputClasses.input}`]: { width: 0 },
+					}}
+					value={""}
 					startDecorator={
 						<Stack direction={"row"} spacing={0.5}>
 							{pressKey.metaKey && <Chip color={"primary"}>Meta</Chip>}
@@ -27,7 +31,6 @@ export const KeySelector = memo(
 							{pressKey.key && <Chip variant={"outlined"}>{pressKey.key}</Chip>}
 						</Stack>
 					}
-					value={""}
 					onKeyDown={(e) => {
 						e.preventDefault();
 						const { metaKey, ctrlKey, altKey, shiftKey, key } = e;

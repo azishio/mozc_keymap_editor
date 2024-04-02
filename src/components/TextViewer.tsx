@@ -6,7 +6,6 @@ export function TextViewer({ text }: { text: string }) {
 			<Sheet
 				variant={"outlined"}
 				sx={{
-					width: "100%",
 					position: "relative",
 					minHeight: 100,
 					boxShadow: "sm",

@@ -33,7 +33,7 @@ export default function Home() {
 			<Stack sx={{ margin: 3, alignItems: "center" }}>
 				<Typography level={"h1"}>Mozc キー設定編集ツール</Typography>
 				<Divider sx={{ marginY: 2 }} />
-				<Tabs sx={{ maxWidth: 1360, minWidth: "fit-content" }}>
+				<Tabs sx={{ maxWidth: 1500, width: "90%" }}>
 					<TabList defaultValue={0}>
 						<Tab variant={"outlined"}>
 							<Typography startDecorator={<Edit />}>編集</Typography>

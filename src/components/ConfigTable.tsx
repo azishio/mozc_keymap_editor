@@ -1,7 +1,7 @@
 import { Keymap, type Keymaps } from "@/classes/Keymaps.ts";
 import { Row } from "@/components/Row";
 import { SortableProvider } from "@/components/SortableProvider.tsx";
-import { AddCircleOutline, DeleteForever } from "@mui/icons-material";
+import { AddCircleOutline } from "@mui/icons-material";
 import { IconButton, Sheet, Stack, Table, Typography } from "@mui/joy";
 import {
 	type Dispatch,
@@ -45,23 +45,31 @@ export function ConfigTable({
 					stripe={"even"}
 					sx={{
 						tableLayout: "auto",
+						"& thead th": {
+							verticalAlign: "middle",
+						},
 						"& thead th:first-of-type": {
 							width: 50,
 							textAlign: "center",
+						},
+						"& thead th:nth-of-type(3)": {
+							width: "20%",
+							maxWidth: "100",
+						},
+						"& thead th:nth-of-type(4)": {
+							width: "20%",
+							maxWidth: "100",
 						},
 						"& thead th:last-of-type": {
 							width: 50,
 							textAlign: "center",
 						},
-
 						"& td:first-of-type ": {
 							textAlign: "center",
 						},
 						"& td:last-of-type": {
 							textAlign: "center",
-						},
-						"& thead th": {
-							verticalAlign: "middle",
+							padding: 0,
 						},
 						"& td": {
 							paddingX: 2,
@@ -83,11 +91,7 @@ export function ConfigTable({
 							<th>
 								<Typography level={"title-lg"}>コマンド</Typography>
 							</th>
-							<th>
-								<Typography level={"title-lg"}>
-									<DeleteForever />
-								</Typography>
-							</th>
+							<th />
 						</tr>
 					</thead>
 					<tbody>

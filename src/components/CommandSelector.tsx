@@ -40,7 +40,6 @@ export const CommandSelector = memo(
 		return (
 			<>
 				<Select
-					sx={{ minWidth: "fit-content", maxWidth: "400px" }}
 					placeholder={"* 未選択 *"}
 					value={command.getEnName()}
 					renderValue={() => (
