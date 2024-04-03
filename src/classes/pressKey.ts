@@ -31,6 +31,7 @@ export class PressKey {
 		["ArrowDown", "Down"],
 		["ArrowLeft", "Left"],
 		["ArrowRight", "Right"],
+		[" ", "Space"],
 	]);
 	public key: string | null = null;
 	public metaKey = false;
