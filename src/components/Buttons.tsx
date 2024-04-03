@@ -127,7 +127,7 @@ export function Buttons({
 				</ButtonGroup>
 
 				<ButtonGroup>
-					<Tooltip title={"クリップボードへコピー"} placement={"top"}>
+					<Tooltip title={"クリップボードへコピー"}>
 						<IconButton
 							disabled={!hasClipboard}
 							onClick={() =>
@@ -139,7 +139,7 @@ export function Buttons({
 							<ContentCopy />
 						</IconButton>
 					</Tooltip>
-					<Tooltip title={"設定ファイルのダウンロード"} placement={"top"}>
+					<Tooltip title={"設定ファイルのダウンロード"}>
 						<Link href={objectURL || ""} download={"keymap.txt"}>
 							<IconButton>
 								<Download />

@@ -71,9 +71,11 @@ export function Row({
 				<CommandSelector command={command} setState={setState} />
 			</td>
 			<td>
-				<IconButton onClick={() => deleteKeymap(id)}>
-					<RemoveCircle />
-				</IconButton>
+				<Tooltip title={"削除"}>
+					<IconButton onClick={() => deleteKeymap(id)}>
+						<RemoveCircle />
+					</IconButton>
+				</Tooltip>
 			</td>
 		</SortableTr>
 	);

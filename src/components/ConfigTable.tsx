@@ -2,7 +2,7 @@ import { Keymap, type Keymaps } from "@/classes/Keymaps.ts";
 import { Row } from "@/components/Row";
 import { SortableProvider } from "@/components/SortableProvider.tsx";
 import { AddCircleOutline } from "@mui/icons-material";
-import { IconButton, Sheet, Stack, Table, Typography } from "@mui/joy";
+import { IconButton, Sheet, Stack, Table, Tooltip, Typography } from "@mui/joy";
 import {
 	type Dispatch,
 	type SetStateAction,
@@ -123,15 +123,17 @@ export function ConfigTable({
 					</tbody>
 				</Table>
 			</Sheet>
-			<IconButton
-				size={"lg"}
-				onClick={() => {
-					const newId = keymaps.push(new Keymap());
-					setKeymapOrder((prev) => [...prev, newId]);
-				}}
-			>
-				<AddCircleOutline />
-			</IconButton>
+			<Tooltip title={"追加"}>
+				<IconButton
+					size={"lg"}
+					onClick={() => {
+						const newId = keymaps.push(new Keymap());
+						setKeymapOrder((prev) => [...prev, newId]);
+					}}
+				>
+					<AddCircleOutline />
+				</IconButton>
+			</Tooltip>
 		</Stack>
 	);
 }
