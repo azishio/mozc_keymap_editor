@@ -41,6 +41,7 @@ export const KeySelector = memo(
 						sx={{
 							caretColor: "transparent",
 							[`& .${inputClasses.input}`]: { width: 0 },
+							[`& .${inputClasses.startDecorator}`]: { pointerEvents: "none" },
 						}}
 						value={""}
 						startDecorator={
