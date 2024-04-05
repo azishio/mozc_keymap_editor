@@ -3,7 +3,7 @@ import { CommandSelector } from "@/components/CommandSelector";
 import { KeySelector } from "@/components/KeySelector";
 import { ModeSelector } from "@/components/ModeSelector";
 import { SortableTr } from "@/components/SortableTr.tsx";
-import { RemoveCircle, Report } from "@mui/icons-material";
+import { Announcement, RemoveCircle } from "@mui/icons-material";
 import { IconButton, Stack, Tooltip, Typography } from "@mui/joy";
 import React, { type Dispatch, type SetStateAction, useCallback } from "react";
 
@@ -51,11 +51,11 @@ export function Row({
 							placement={"right"}
 							color={"danger"}
 							variant={"plain"}
-							sx={{ position: "absolute", top: -30 }}
+							sx={{ position: "absolute", top: -20, right: -15 }}
 						>
 							{/* 恐らくMUI用のキーワードを強制しようとしている */
 							/* @ts-ignore */}
-							<Report color={"danger"} />
+							<Announcement color={"danger"} />
 						</Tooltip>
 					)}
 					<Typography level={"title-lg"}>{order}</Typography>
