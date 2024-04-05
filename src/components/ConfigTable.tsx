@@ -44,6 +44,7 @@ export function ConfigTable({
 					stickyHeader
 					stripe={"even"}
 					sx={{
+						userSelect: "none",
 						tableLayout: "auto",
 						"& thead th": {
 							verticalAlign: "middle",
