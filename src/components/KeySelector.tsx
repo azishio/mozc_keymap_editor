@@ -51,7 +51,7 @@ export const KeySelector = memo(
 								{pressKey.altKey && <Chip color={"primary"}>Alt</Chip>}
 								{pressKey.shiftKey && <Chip color={"primary"}>Shift</Chip>}
 								{pressKey.key && (
-									<Chip variant={"outlined"}>{pressKey.key}</Chip>
+									<Chip variant={"outlined"}>{pressKey.key.toUpperCase()}</Chip>
 								)}
 							</Stack>
 						}
