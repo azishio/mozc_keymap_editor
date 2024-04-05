@@ -30,7 +30,7 @@ export default function Home() {
 
 	return (
 		<main>
-			<Stack sx={{ margin: 3, alignItems: "center" }}>
+			<Stack sx={{ padding: 3, alignItems: "center" }}>
 				<Typography level={"h1"}>Mozc キー設定編集ツール</Typography>
 				<Divider sx={{ marginY: 2 }} />
 				<Tabs sx={{ maxWidth: 1500, width: "90%" }}>
