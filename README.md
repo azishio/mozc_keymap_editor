@@ -2,6 +2,8 @@
 　Mozcのキーマップ設定ファイルを楽に編集するためのツールです。
 新規設定ファイルの作成だけでなく、既存の設定ファイルを読み込んで編集したり、複数の設定ファイルを統合することもできます。
 
+![Mozc Keymap Editor](https://github.com/azishio/mozc_keymap_editor/assets/127939746/6ca19970-a16e-47e1-9c88-6506810956ae)
+
 ## 使用方法
 　GitHub Pagesに公開しているので、以下のURLから使用できます。
 https://azishio.github.io/mozc_keymap_editor/
